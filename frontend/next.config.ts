@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["10.175.69.221", "*.local", "localhost"],
+  allowedDevOrigins: ["10.175.69.221","10.118.137.221", "*.local", "localhost"],
   poweredByHeader: false,
   turbopack: { root: __dirname },
   async redirects() {

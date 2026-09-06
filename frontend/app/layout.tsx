@@ -87,7 +87,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="flex flex-col" suppressHydrationWarning>
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-WSP0T6Z6YL"
+          src="https://www.googletagmanager.com/gtag/js?id=G-6XLG2SBP5K"
           strategy="afterInteractive"
         />
         <Script id="google-analytics" strategy="afterInteractive">
@@ -95,7 +95,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     window.dataLayer = window.dataLayer || [];
     function gtag(){window.dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-WSP0T6Z6YL');
+    gtag('config', 'G-6XLG2SBP5K');
   `}
         </Script>
         <script

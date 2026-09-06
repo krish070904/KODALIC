@@ -5,6 +5,7 @@ import {
   Bodoni_Moda,
   IBM_Plex_Mono,
 } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "./theme-provider";
 import PageViewTracker from "../components/analytics/page-view-tracker";
@@ -43,21 +44,21 @@ export const metadata: Metadata = {
   applicationName: SITE_NAME,
   robots: isPreview
     ? {
-        index: false,
-        follow: false,
-        googleBot: { index: false, follow: false },
-      }
+      index: false,
+      follow: false,
+      googleBot: { index: false, follow: false },
+    }
     : {
+      index: true,
+      follow: true,
+      googleBot: {
         index: true,
         follow: true,
-        googleBot: {
-          index: true,
-          follow: true,
-          "max-image-preview": "large",
-          "max-snippet": -1,
-          "max-video-preview": -1,
-        },
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
       },
+    },
   openGraph: {
     title: "Kodalic — Engineering What Businesses Become Next",
     description:
@@ -85,6 +86,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="flex flex-col" suppressHydrationWarning>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-WSP0T6Z3YL"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){window.dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-WSP0T6Z3YL');
+  `}
+        </Script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

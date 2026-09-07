@@ -8,9 +8,8 @@ import { getAdminRecentLeads } from "../../lib/auth/get-admin-recent-leads";
 import LeadOverviewChart from "../../components/admin/lead-overview-chart";
 import { getAdminLeadOverview } from "../../lib/auth/get-admin-lead-overview";
 import { getAdminProjectStatus } from "../../lib/auth/get-admin-project-status";
-import { getAdminTopPages } from "../../lib/auth/get-admin-top-pages";
 import { getAdminSystemHealth } from "../../lib/auth/get-admin-system-health";
-
+import { getGA4Overview, getGA4TopPages } from "../../lib/analytics/ga4";
 type MetricCardProps = {
   label: string;
   value: number | string;
@@ -62,7 +61,11 @@ export default async function AdminPage() {
 
   const projectStatus = await getAdminProjectStatus();
 
-  const topPages = canViewAnalytics ? await getAdminTopPages(30, 5) : [];
+  const ga4Overview = canViewAnalytics
+    ? await getGA4Overview(30)
+    : null;
+
+  const topPages = canViewAnalytics ? await getGA4TopPages(30, 5) : [];``
 
   const systemHealth = await getAdminSystemHealth();
 
@@ -143,6 +146,34 @@ export default async function AdminPage() {
               value={metrics.projects_published}
               description="Currently visible publicly"
             />
+
+            {canViewAnalytics && (
+              <>
+                <MetricCard
+                  label="Active Users"
+                  value={ga4Overview?.activeUsers ?? 0}
+                  description="GA4 users over the last 30 days"
+                />
+
+                <MetricCard
+                  label="Sessions"
+                  value={ga4Overview?.sessions ?? 0}
+                  description="GA4 sessions over the last 30 days"
+                />
+
+                <MetricCard
+                  label="Page Views"
+                  value={ga4Overview?.screenPageViews ?? 0}
+                  description="GA4 page views over the last 30 days"
+                />
+
+                <MetricCard
+                  label="Engagement Rate"
+                  value={`${((ga4Overview?.engagementRate ?? 0) * 100).toFixed(1)}%`}
+                  description="GA4 engagement rate over the last 30 days"
+                />
+              </>
+            )}
           </div>
 
           {/* ================================================== */}
@@ -304,20 +335,19 @@ export default async function AdminPage() {
                       <div
                         className="h-full rounded-full bg-[#7357ff]"
                         style={{
-                          width: `${
-                            projectStatus.reduce(
-                              (total, current) => total + current.project_count,
-                              0,
-                            ) > 0
-                              ? (item.project_count /
-                                  projectStatus.reduce(
-                                    (total, current) =>
-                                      total + current.project_count,
-                                    0,
-                                  )) *
-                                100
-                              : 0
-                          }%`,
+                          width: `${projectStatus.reduce(
+                            (total, current) => total + current.project_count,
+                            0,
+                          ) > 0
+                            ? (item.project_count /
+                              projectStatus.reduce(
+                                (total, current) =>
+                                  total + current.project_count,
+                                0,
+                              )) *
+                            100
+                            : 0
+                            }%`,
                         }}
                       />
                     </div>
@@ -327,74 +357,74 @@ export default async function AdminPage() {
             )}
           </section>
           {/* ================================================== */}
-{/* TOP PAGES */}
-{/* ================================================== */}
+          {/* TOP PAGES */}
+          {/* ================================================== */}
 
-{canViewAnalytics && (
-  <section className="mt-6 rounded-2xl border border-white/10 bg-[#111528]">
-            <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
-              <div>
-                <h2 className="text-base font-semibold">Top Pages</h2>
+          {canViewAnalytics && (
+            <section className="mt-6 rounded-2xl border border-white/10 bg-[#111528]">
+              <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
+                <div>
+                  <h2 className="text-base font-semibold">Top Pages</h2>
 
-                <p className="mt-1 text-xs text-white/40">
-                  Most visited pages over the last 30 days
-                </p>
+                  <p className="mt-1 text-xs text-white/40">
+                    Most visited pages over the last 30 days
+                  </p>
+                </div>
+
+                <span className="rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-white/55">
+                  Last 30 days
+                </span>
               </div>
 
-              <span className="rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-xs text-white/55">
-                Last 30 days
-              </span>
-            </div>
+              {topPages.length === 0 ? (
+                <div className="flex min-h-[180px] items-center justify-center px-6">
+                  <p className="text-sm text-white/35">No page views yet.</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-white/10">
+                  {topPages.map((page, index) => {
+                    const maxViews = Math.max(
+                      ...topPages.map((item) => item.view_count),
+                      1,
+                    );
 
-            {topPages.length === 0 ? (
-              <div className="flex min-h-[180px] items-center justify-center px-6">
-                <p className="text-sm text-white/35">No page views yet.</p>
-              </div>
-            ) : (
-              <div className="divide-y divide-white/10">
-                {topPages.map((page, index) => {
-                  const maxViews = Math.max(
-                    ...topPages.map((item) => item.view_count),
-                    1,
-                  );
+                    const percentage = (page.view_count / maxViews) * 100;
 
-                  const percentage = (page.view_count / maxViews) * 100;
+                    return (
+                      <div key={page.path} className="px-6 py-4">
+                        <div className="flex items-center gap-4">
+                          <span className="w-6 text-xs text-white/30">
+                            {index + 1}
+                          </span>
 
-                  return (
-                    <div key={page.path} className="px-6 py-4">
-                      <div className="flex items-center gap-4">
-                        <span className="w-6 text-xs text-white/30">
-                          {index + 1}
-                        </span>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between gap-4">
+                              <p className="truncate text-sm font-medium text-white/80">
+                                {page.path}
+                              </p>
 
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center justify-between gap-4">
-                            <p className="truncate text-sm font-medium text-white/80">
-                              {page.path}
-                            </p>
+                              <p className="shrink-0 text-sm font-semibold text-white">
+                                {page.view_count.toLocaleString("en-IN")}
+                              </p>
+                            </div>
 
-                            <p className="shrink-0 text-sm font-semibold text-white">
-                              {page.view_count.toLocaleString("en-IN")}
-                            </p>
-                          </div>
-
-                          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
-                            <div
-                              className="h-full rounded-full bg-[#7357ff] transition-all"
-                              style={{
-                                width: `${percentage}%`,
-                              }}
-                            />
+                            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10">
+                              <div
+                                className="h-full rounded-full bg-[#7357ff] transition-all"
+                                style={{
+                                  width: `${percentage}%`,
+                                }}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </section>
-)}
+                    );
+                  })}
+                </div>
+              )}
+            </section>
+          )}
           {/* ================================================== */}
           {/* SYSTEM OVERVIEW */}
           {/* ================================================== */}
@@ -427,9 +457,8 @@ export default async function AdminPage() {
                       <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
                           <span
-                            className={`h-2.5 w-2.5 rounded-full ${
-                              isOperational ? "bg-emerald-400" : "bg-amber-400"
-                            }`}
+                            className={`h-2.5 w-2.5 rounded-full ${isOperational ? "bg-emerald-400" : "bg-amber-400"
+                              }`}
                           />
 
                           <p className="text-sm font-medium text-white/80">
@@ -438,11 +467,10 @@ export default async function AdminPage() {
                         </div>
 
                         <span
-                          className={`text-xs font-medium capitalize ${
-                            isOperational
-                              ? "text-emerald-300"
-                              : "text-amber-300"
-                          }`}
+                          className={`text-xs font-medium capitalize ${isOperational
+                            ? "text-emerald-300"
+                            : "text-amber-300"
+                            }`}
                         >
                           {system.system_status}
                         </span>

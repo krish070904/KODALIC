@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Workflow, CRM, lead, marketing, process and API/integration automation that saves time, reduces errors and gives you real-time visibility into your business.",
   alternates: {
-    canonical: "/business-automation",
+    canonical: "/automation",
   },
 };
 

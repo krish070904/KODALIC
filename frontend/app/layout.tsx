@@ -61,8 +61,7 @@ export const metadata: Metadata = {
     },
   openGraph: {
     title: "Kodalic — Engineering What Businesses Become Next",
-    description:
-      "Intelligent technology solutions that help businesses evolve, automate, and compete.",
+    description: DEFAULT_DESCRIPTION,
     type: "website",
     url: SITE_URL,
     siteName: SITE_NAME,
@@ -70,8 +69,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Kodalic — Engineering What Businesses Become Next",
-    description:
-      "Intelligent technology solutions that help businesses evolve, automate, and compete.",
+    description: DEFAULT_DESCRIPTION,
   },
 };
 

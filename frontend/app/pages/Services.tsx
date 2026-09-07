@@ -1,8 +1,15 @@
 "use client";
-
+import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { Globe, Cog, Sparkles, LayoutGrid, Wrench, type LucideIcon } from "lucide-react";
+import {
+  Globe,
+  Cog,
+  Sparkles,
+  Code2,
+  TrendingUp,
+  type LucideIcon,
+} from "lucide-react";
 import { DEMO_MODE, DEMO_STATS } from "../data/demoData";
 import "../components/MagicBento.css";
 import VariableProximity from "../components/VariableProximity";
@@ -15,7 +22,7 @@ interface Service {
   icon: LucideIcon;
   title: string;
   description: string;
-  href?: string;
+  href: string;
   image: string;
 }
 
@@ -25,6 +32,7 @@ const SERVICES: Service[] = [
     title: "Website Development",
     description:
       "Fast, modern sites built to convert. Launch in weeks, not months. Optimized for speed and search from day one.",
+    href: "/website-development",
     image: "/services/website-development.webp",
   },
   {
@@ -32,6 +40,7 @@ const SERVICES: Service[] = [
     title: "Business Automation",
     description:
       "Workflows that run themselves. Cut manual work, reduce errors, and free your team to focus on what matters.",
+    href: "/automation",
     image: "/services/business-automation.webp",
   },
   {
@@ -39,21 +48,24 @@ const SERVICES: Service[] = [
     title: "AI Solutions",
     description:
       "Practical AI, built into your product. From chatbots to smart automations, deployed where it actually helps.",
+    href: "/ai-solutions",
     image: "/services/ai-solutions.webp",
   },
   {
-    icon: LayoutGrid,
-    title: "Digital Solutions",
+    icon: Code2,
+    title: "Software Development",
     description:
-      "Tools tailored to how you work. Custom dashboards, internal apps, and integrations built around your process.",
-    image: "/services/digital-solutions.webp",
+      "Custom software, platforms, integrations and internal tools built around how your business works.",
+    href: "/software-development",
+    image: "/softwaredev.png",
   },
   {
-    icon: Wrench,
-    title: "Maintenance & Support",
+    icon: TrendingUp,
+    title: "Digital Growth",
     description:
-      "Ongoing updates, monitoring, and support so your product keeps running smoothly. Coverage depends on plan and scope.",
-    image: "/services/maintenance-support.webp",
+      "SEO, digital marketing, social media and analytics designed to attract the right audience and drive measurable growth.",
+    href: "/digital-marketing",
+    image: "/digitalgrowth1.png",
   },
 ];
 
@@ -406,34 +418,58 @@ export default function Services({ isDark }: ServicesProps) {
         </h2>
       </div>
 
-      <div ref={wrapperRef} className="magic-bento-wrapper flex flex-col gap-10 px-6 sm:px-10 lg:px-20 pb-32 max-w-6xl mx-auto">
+      <div
+        ref={wrapperRef}
+        className="magic-bento-wrapper flex flex-col gap-10 px-6 sm:px-10 lg:px-20 pb-32 max-w-6xl mx-auto"
+      >
         <div ref={spotlightRef} className="magic-bento-spotlight" aria-hidden />
-        {SERVICES.map(({ title, description, image }, i) => {
+
+        {SERVICES.map(({ title, description, href, image }, i) => {
           const reversed = i % 2 === 1;
+
           return (
             <RevealOnScroll key={title}>
-              <div
+              <Link
+                href={href}
                 data-magic-card
-                className="magic-card group relative w-full rounded-[32px] overflow-hidden border transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 will-change-transform"
+                className="magic-card group relative block w-full rounded-[32px] overflow-hidden border transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 will-change-transform"
                 style={{
-                  borderColor: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)",
+                  borderColor: isDark
+                    ? "rgba(255,255,255,0.06)"
+                    : "rgba(0,0,0,0.06)",
                   background: isDark ? "rgba(255,255,255,0.02)" : "#ffffff",
                 }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.borderColor = isDark ? "rgba(167,139,250,0.18)" : "rgba(109,40,217,0.12)";
-                  (e.currentTarget as HTMLDivElement).style.boxShadow = isDark ? "0 20px 50px rgba(167,139,250,0.12)" : "0 20px 50px rgba(109,40,217,0.10)";
+                  e.currentTarget.style.borderColor = isDark
+                    ? "rgba(167,139,250,0.18)"
+                    : "rgba(109,40,217,0.12)";
+                  e.currentTarget.style.boxShadow = isDark
+                    ? "0 20px 50px rgba(167,139,250,0.12)"
+                    : "0 20px 50px rgba(109,40,217,0.10)";
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.borderColor = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)";
-                  (e.currentTarget as HTMLDivElement).style.boxShadow = "none";
+                  e.currentTarget.style.borderColor = isDark
+                    ? "rgba(255,255,255,0.06)"
+                    : "rgba(0,0,0,0.06)";
+                  e.currentTarget.style.boxShadow = "none";
                 }}
               >
-                <div className={`magic-card-content relative flex flex-col ${reversed ? "md:flex-row-reverse" : "md:flex-row"} items-center gap-8 md:gap-4 p-8 md:p-12`}>
+                <div
+                  className={`magic-card-content relative flex flex-col ${reversed ? "md:flex-row-reverse" : "md:flex-row"
+                    } items-center gap-8 md:gap-4 p-8 md:p-12`}
+                >
                   <div className="w-full md:w-1/2 flex flex-col items-start">
-                    <h3 className="font-bold text-2xl sm:text-3xl mb-3 tracking-tight leading-tight" style={{ color: textPrimary }}>
+                    <h3
+                      className="font-bold text-2xl sm:text-3xl mb-3 tracking-tight leading-tight"
+                      style={{ color: textPrimary }}
+                    >
                       {title}
                     </h3>
-                    <p className="text-[15px] sm:text-base leading-relaxed max-w-md" style={{ color: textMuted }}>
+
+                    <p
+                      className="text-[15px] sm:text-base leading-relaxed max-w-md"
+                      style={{ color: textMuted }}
+                    >
                       {description}
                     </p>
                   </div>
@@ -441,13 +477,25 @@ export default function Services({ isDark }: ServicesProps) {
                   <div className="w-full md:w-1/2 flex items-center justify-center">
                     <div
                       className="relative w-full max-w-sm rounded-[28px] overflow-hidden flex flex-col items-center justify-center h-[208px] transition-colors duration-300"
-                      style={{ border: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.05)"}` }}
+                      style={{
+                        border: `1px solid ${isDark
+                            ? "rgba(255,255,255,0.06)"
+                            : "rgba(0,0,0,0.05)"
+                          }`,
+                      }}
                     >
-                      <img src={image} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" />
+                      <img
+                        src={image}
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 h-full w-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             </RevealOnScroll>
           );
         })}

@@ -60,7 +60,13 @@ interface FooterProps {
   onToggleDark: () => void;
 }
 
-const PRODUCT_LINKS = ["Website Development", "Business Automation", "AI Solutions", "Digital Solutions"];
+const PRODUCT_LINKS = [
+  "Website Development",
+  "Business Automation",
+  "AI Solutions",
+  "Software Development",
+  "Digital Growth",
+];
 
 const COMPANY_LINKS: { label: string; id: string }[] = [
   { label: "About Us", id: "about" },
@@ -175,11 +181,29 @@ export default function Footer({ isDark, onHeightChange, onToggleDark }: FooterP
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-10 py-10">
           <FooterColumn title="Product" textPrimary={textPrimary}>
-            {PRODUCT_LINKS.map((l) => (
-              <a key={l} href="#services" onClick={scrollTo("services")} className="text-sm hover:underline" style={{ color: textMuted }}>
-                {l}
-              </a>
-            ))}
+            {PRODUCT_LINKS.map((l) => {
+              const href =
+                l === "Website Development"
+                  ? "/website-development"
+                  : l === "Business Automation"
+                    ? "/automation"
+                    : l === "AI Solutions"
+                      ? "/ai-solutions"
+                      : l === "Software Development"
+                        ? "/software-development"
+                        : "/digital-marketing";
+
+              return (
+                <Link
+                  key={l}
+                  href={href}
+                  className="text-sm hover:underline"
+                  style={{ color: textMuted }}
+                >
+                  {l}
+                </Link>
+              );
+            })}
           </FooterColumn>
 
           <FooterColumn title="Company" textPrimary={textPrimary}>

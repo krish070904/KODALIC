@@ -27,21 +27,20 @@ export default async function CaseStudiesPage() {
   const caseStudies = await getAdminCaseStudies();
 
   return (
-    <main className="min-h-screen bg-[#080c1e] px-6 py-16 text-white">
+    <div className="p-6 lg:p-8">
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm text-white/50">
-              Case Studies
+            <p className="text-xs uppercase tracking-wider text-slate-400 dark:text-white/35">
+              Portfolio
             </p>
 
-            <h1 className="mt-2 text-4xl font-semibold">
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
               Case Studies
             </h1>
 
-            <p className="mt-4 max-w-2xl text-white/60">
-              Create and manage the case studies published
-              on the Kodalic website.
+            <p className="mt-2 max-w-2xl text-sm text-slate-500 dark:text-white/45">
+              Create and manage the case studies published on the Kodalic website.
             </p>
           </div>
 
@@ -53,22 +52,22 @@ export default async function CaseStudiesPage() {
           </Link>
         </div>
 
-        <div className="mt-10 overflow-hidden rounded-2xl border border-white/10 bg-[#111528]">
+        <div className="mt-10 overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111528] shadow-sm dark:shadow-none transition-colors duration-200">
           {caseStudies.length === 0 ? (
             <div className="px-6 py-16 text-center">
-              <p className="text-sm text-white/40">
+              <p className="text-sm text-slate-400 dark:text-white/40">
                 No case studies yet.
               </p>
 
               <Link
                 href="/admin/case-studies/new"
-                className="mt-4 inline-block text-sm text-[#a99cff] hover:text-white"
+                className="mt-4 inline-block text-sm text-[#5b3df5] dark:text-[#a99cff] hover:text-slate-900 dark:hover:text-white"
               >
                 Create your first case study →
               </Link>
             </div>
           ) : (
-            <div className="divide-y divide-white/10">
+            <div className="divide-y divide-slate-200 dark:divide-white/10">
               {caseStudies.map((caseStudy) => (
                 <div
                   key={caseStudy.id}
@@ -76,26 +75,26 @@ export default async function CaseStudiesPage() {
                 >
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="truncate text-base font-semibold">
+                      <h2 className="truncate text-base font-semibold text-slate-900 dark:text-white">
                         {caseStudy.title}
                       </h2>
 
-                      <span className="rounded-full bg-white/[0.06] px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-white/45">
+                      <span className="rounded-full bg-slate-100 dark:bg-white/[0.06] px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-slate-500 dark:text-white/45">
                         {caseStudy.domain}
                       </span>
 
                       {caseStudy.featured && (
-                        <span className="rounded-full bg-[#7357ff]/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-[#a99cff]">
+                        <span className="rounded-full bg-[#7357ff]/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-[#5b3df5] dark:text-[#a99cff]">
                           Featured
                         </span>
                       )}
                     </div>
 
-                    <p className="mt-2 line-clamp-2 text-sm text-white/45">
+                    <p className="mt-2 line-clamp-2 text-sm text-slate-500 dark:text-white/45">
                       {caseStudy.description}
                     </p>
 
-                    <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-white/30">
+                    <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-slate-400 dark:text-white/30">
                       <span>
                         {caseStudy.published
                           ? "Published"
@@ -118,7 +117,7 @@ export default async function CaseStudiesPage() {
                   <div className="shrink-0">
                     <Link
                       href={`/admin/case-studies/${caseStudy.id}`}
-                      className="inline-flex rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-xs font-medium text-white/65 transition hover:bg-white/[0.08] hover:text-white"
+                      className="inline-flex rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.04] px-4 py-2.5 text-xs font-medium text-slate-600 dark:text-white/65 transition hover:bg-slate-100 dark:hover:bg-white/[0.08] hover:text-slate-900 dark:hover:text-white"
                     >
                       Edit
                     </Link>
@@ -129,6 +128,6 @@ export default async function CaseStudiesPage() {
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

@@ -1,10 +1,7 @@
 import Link from "next/link";
 import { requirePermission } from "../../../lib/auth/require-permission";
 import { requireAAL2 } from "../../../lib/auth/require-aal2";
-import { getAdminUser } from "../../../lib/auth/get-admin-user";
-import { getAdminNavigation } from "../../../lib/auth/get-admin-navigation";
 import { getAdminLeads } from "../../../lib/auth/get-admin-leads";
-import AdminSidebar from "../../../components/admin/sidebar";
 
 function getLeadName(
   contactFields: Record<string, unknown>,
@@ -35,22 +32,22 @@ function formatDate(value: string): string {
 function getStatusClasses(status: string): string {
   switch (status) {
     case "new":
-      return "border-blue-400/20 bg-blue-400/10 text-blue-200";
+      return "border-blue-500/20 bg-blue-500/10 text-blue-700 dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-200";
 
     case "reviewed":
-      return "border-amber-400/20 bg-amber-400/10 text-amber-200";
+      return "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-200";
 
     case "transferred_to_crm":
-      return "border-purple-400/20 bg-purple-400/10 text-purple-200";
+      return "border-purple-500/20 bg-purple-500/10 text-purple-700 dark:border-purple-400/20 dark:bg-purple-400/10 dark:text-purple-200";
 
     case "archived":
-      return "border-white/10 bg-white/[0.05] text-white/50";
+      return "border-slate-300 bg-slate-100 text-slate-500 dark:border-white/10 dark:bg-white/[0.05] dark:text-white/50";
 
     case "spam":
-      return "border-red-400/20 bg-red-400/10 text-red-200";
+      return "border-red-500/20 bg-red-500/10 text-red-700 dark:border-red-400/20 dark:bg-red-400/10 dark:text-red-200";
 
     default:
-      return "border-white/10 bg-white/[0.05] text-white/60";
+      return "border-slate-300 bg-slate-100 text-slate-500 dark:border-white/10 dark:bg-white/[0.05] dark:text-white/60";
   }
 }
 
@@ -58,31 +55,11 @@ export default async function LeadsPage() {
   await requirePermission("leads.view");
   await requireAAL2();
 
-  const adminUser = await getAdminUser();
-  const navigation = await getAdminNavigation();
   const leads = await getAdminLeads();
 
   return (
-    <div className="min-h-screen bg-[#080c1e] text-white">
-
-      {/* ================================================== */}
-      {/* SIDEBAR */}
-      {/* ================================================== */}
-
-      <AdminSidebar
-        name={adminUser.name}
-        email={adminUser.email}
-        role={adminUser.role}
-        navigation={navigation}
-      />
-
-      {/* ================================================== */}
-      {/* MAIN */}
-      {/* ================================================== */}
-
-      <main className="min-h-screen ml-64 px-8 py-8">
-
-        <div className="mx-auto max-w-7xl">
+    <div className="p-6 lg:p-8">
+      <div className="mx-auto max-w-7xl">
 
           {/* ================================================== */}
           {/* HEADER */}
@@ -94,27 +71,27 @@ export default async function LeadsPage() {
 
               <div>
 
-                <p className="text-xs uppercase tracking-wider text-white/35">
+                <p className="text-xs uppercase tracking-wider text-slate-400 dark:text-white/35">
                   CRM
                 </p>
 
-                <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+                <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
                   Leads
                 </h1>
 
-                <p className="mt-2 text-sm text-white/45">
+                <p className="mt-2 text-sm text-slate-500 dark:text-white/45">
                   Manage enquiries and follow-ups received by Kodalic.
                 </p>
 
               </div>
 
-              <div className="hidden rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 text-right sm:block">
+              <div className="hidden rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.04] px-4 py-3 text-right sm:block transition-colors duration-200">
 
-                <p className="text-xs text-white/35">
+                <p className="text-xs text-slate-400 dark:text-white/35">
                   Total Leads
                 </p>
 
-                <p className="mt-1 text-xl font-semibold">
+                <p className="mt-1 text-xl font-semibold text-slate-900 dark:text-white">
                   {leads.length}
                 </p>
 
@@ -132,42 +109,42 @@ export default async function LeadsPage() {
 
             <button
               type="button"
-              className="rounded-lg border border-white/15 bg-white/[0.08] px-3 py-2 text-xs font-medium text-white"
+              className="rounded-lg border border-slate-300 dark:border-white/15 bg-slate-100 dark:bg-white/[0.08] px-3 py-2 text-xs font-medium text-slate-900 dark:text-white"
             >
               All
             </button>
 
             <button
               type="button"
-              className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-white/50"
+              className="rounded-lg border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.03] px-3 py-2 text-xs text-slate-500 dark:text-white/50"
             >
               New
             </button>
 
             <button
               type="button"
-              className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-white/50"
+              className="rounded-lg border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.03] px-3 py-2 text-xs text-slate-500 dark:text-white/50"
             >
               Reviewed
             </button>
 
             <button
               type="button"
-              className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-white/50"
+              className="rounded-lg border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.03] px-3 py-2 text-xs text-slate-500 dark:text-white/50"
             >
               Transferred
             </button>
 
             <button
               type="button"
-              className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-white/50"
+              className="rounded-lg border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.03] px-3 py-2 text-xs text-slate-500 dark:text-white/50"
             >
               Archived
             </button>
 
             <button
               type="button"
-              className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-white/50"
+              className="rounded-lg border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.03] px-3 py-2 text-xs text-slate-500 dark:text-white/50"
             >
               Spam
             </button>
@@ -178,15 +155,15 @@ export default async function LeadsPage() {
           {/* LEADS TABLE */}
           {/* ================================================== */}
 
-          <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#111528]">
+          <section className="overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111528] shadow-sm dark:shadow-none transition-colors duration-200">
 
-            <div className="border-b border-white/10 px-6 py-5">
+            <div className="border-b border-slate-200 dark:border-white/10 px-6 py-5">
 
-              <h2 className="text-base font-semibold">
+              <h2 className="text-base font-semibold text-slate-900 dark:text-white">
                 All Leads
               </h2>
 
-              <p className="mt-1 text-xs text-white/40">
+              <p className="mt-1 text-xs text-slate-400 dark:text-white/40">
                 Most recent enquiries appear first.
               </p>
 
@@ -198,11 +175,11 @@ export default async function LeadsPage() {
 
                 <div className="text-center">
 
-                  <p className="text-sm font-medium text-white/70">
+                  <p className="text-sm font-medium text-slate-600 dark:text-white/70">
                     No leads yet
                   </p>
 
-                  <p className="mt-2 text-xs text-white/35">
+                  <p className="mt-2 text-xs text-slate-400 dark:text-white/35">
                     New enquiries will appear here automatically.
                   </p>
 
@@ -218,29 +195,29 @@ export default async function LeadsPage() {
 
                   <thead>
 
-                    <tr className="border-b border-white/10 text-left">
+                    <tr className="border-b border-slate-200 dark:border-white/10 text-left">
 
-                      <th className="px-6 py-4 text-xs font-medium text-white/35">
+                      <th className="px-6 py-4 text-xs font-medium text-slate-400 dark:text-white/35">
                         Lead
                       </th>
 
-                      <th className="px-6 py-4 text-xs font-medium text-white/35">
+                      <th className="px-6 py-4 text-xs font-medium text-slate-400 dark:text-white/35">
                         Service
                       </th>
 
-                      <th className="px-6 py-4 text-xs font-medium text-white/35">
+                      <th className="px-6 py-4 text-xs font-medium text-slate-400 dark:text-white/35">
                         Budget
                       </th>
 
-                      <th className="px-6 py-4 text-xs font-medium text-white/35">
+                      <th className="px-6 py-4 text-xs font-medium text-slate-400 dark:text-white/35">
                         Source
                       </th>
 
-                      <th className="px-6 py-4 text-xs font-medium text-white/35">
+                      <th className="px-6 py-4 text-xs font-medium text-slate-400 dark:text-white/35">
                         Status
                       </th>
 
-                      <th className="px-6 py-4 text-xs font-medium text-white/35">
+                      <th className="px-6 py-4 text-xs font-medium text-slate-400 dark:text-white/35">
                         Date
                       </th>
 
@@ -248,7 +225,7 @@ export default async function LeadsPage() {
 
                   </thead>
 
-                  <tbody className="divide-y divide-white/10">
+                  <tbody className="divide-y divide-slate-200 dark:divide-white/10">
 
                     {leads.map((lead) => {
 
@@ -264,7 +241,7 @@ export default async function LeadsPage() {
 
                         <tr
                           key={lead.id}
-                          className="transition hover:bg-white/[0.025]"
+                          className="transition hover:bg-slate-50 dark:hover:bg-white/[0.025]"
                         >
 
                           {/* Lead */}
@@ -276,7 +253,7 @@ export default async function LeadsPage() {
                               className="group flex items-center gap-3"
                             >
 
-                              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#7357ff]/15 text-xs font-semibold text-[#b8a8ff]">
+                              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#7357ff]/15 text-xs font-semibold text-[#5b3df5] dark:text-[#b8a8ff]">
                                 {name
                                   .charAt(0)
                                   .toUpperCase()}
@@ -284,12 +261,12 @@ export default async function LeadsPage() {
 
                               <div className="min-w-0">
 
-                                <p className="truncate text-sm font-medium text-white group-hover:text-[#b8a8ff]">
+                                <p className="truncate text-sm font-medium text-slate-900 dark:text-white group-hover:text-[#5b3df5] dark:group-hover:text-[#b8a8ff]">
                                   {name}
                                 </p>
 
                                 {email && (
-                                  <p className="mt-1 truncate text-xs text-white/35">
+                                  <p className="mt-1 truncate text-xs text-slate-400 dark:text-white/35">
                                     {email}
                                   </p>
                                 )}
@@ -304,7 +281,7 @@ export default async function LeadsPage() {
 
                           <td className="px-6 py-5">
 
-                            <p className="text-sm text-white/65">
+                            <p className="text-sm text-slate-600 dark:text-white/65">
                               {lead.service ||
                                 "Not specified"}
                             </p>
@@ -315,7 +292,7 @@ export default async function LeadsPage() {
 
                           <td className="px-6 py-5">
 
-                            <p className="text-sm text-white/55">
+                            <p className="text-sm text-slate-500 dark:text-white/55">
                               {lead.budget ||
                                 "Not specified"}
                             </p>
@@ -326,7 +303,7 @@ export default async function LeadsPage() {
 
                           <td className="px-6 py-5">
 
-                            <p className="text-sm text-white/55">
+                            <p className="text-sm text-slate-500 dark:text-white/55">
                               {lead.source ||
                                 "Unknown"}
                             </p>
@@ -354,7 +331,7 @@ export default async function LeadsPage() {
 
                           <td className="px-6 py-5">
 
-                            <p className="whitespace-nowrap text-xs text-white/40">
+                            <p className="whitespace-nowrap text-xs text-slate-400 dark:text-white/40">
                               {formatDate(
                                 lead.created_at,
                               )}
@@ -372,15 +349,9 @@ export default async function LeadsPage() {
                 </table>
 
               </div>
-
             )}
-
           </section>
-
         </div>
-
-      </main>
-
-    </div>
+      </div>
   );
 }

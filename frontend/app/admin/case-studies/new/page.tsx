@@ -7,7 +7,7 @@ export default async function NewCaseStudyPage() {
   await requirePermission("case_studies.create");
 
   return (
-    <main className="min-h-screen bg-[#080c1e] px-6 py-16 text-white">
+    <div className="p-6 lg:p-8">
       <div className="mx-auto max-w-4xl">
         <Link
           href="/admin/case-studies"
@@ -16,25 +16,24 @@ export default async function NewCaseStudyPage() {
           ← Back to Case Studies
         </Link>
 
-        <div className="mt-8">
-          <p className="text-sm text-white/50">
-            Case Studies
+        <div className="mt-6">
+          <p className="text-xs uppercase tracking-wider text-white/35">
+            Portfolio
           </p>
 
-          <h1 className="mt-2 text-4xl font-semibold">
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight">
             New Case Study
           </h1>
 
-          <p className="mt-4 text-white/60">
-            Create a production-ready case study for the
-            Kodalic website.
+          <p className="mt-2 text-sm text-white/45">
+            Create a production-ready case study for the Kodalic website.
           </p>
         </div>
 
-        <div className="mt-10">
+        <div className="mt-8">
           <CaseStudyCreateForm />
         </div>
       </div>
-    </main>
+    </div>
   );
 }

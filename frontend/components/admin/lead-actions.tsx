@@ -90,7 +90,7 @@ export default function LeadActions({
       <div>
         <label
           htmlFor="lead-status"
-          className="text-xs text-white/35"
+          className="text-xs text-slate-400 dark:text-white/35"
         >
           Status
         </label>
@@ -102,13 +102,13 @@ export default function LeadActions({
           onChange={(event) =>
             setStatus(event.target.value)
           }
-          className="mt-2 w-full rounded-xl border border-white/10 bg-[#080c1e] px-3 py-2.5 text-sm text-white outline-none transition focus:border-[#7357ff]/50 disabled:opacity-50"
+          className="mt-2 w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#080c1e] px-3 py-2.5 text-sm text-slate-900 dark:text-white outline-none transition focus:border-[#7357ff]/50 disabled:opacity-50"
         >
           {statuses.map((item) => (
             <option
               key={item.value}
               value={item.value}
-              className="bg-[#111528]"
+              className="bg-white dark:bg-[#111528]"
             >
               {item.label}
             </option>
@@ -123,7 +123,7 @@ export default function LeadActions({
       <div>
         <label
           htmlFor="lead-assignee"
-          className="text-xs text-white/35"
+          className="text-xs text-slate-400 dark:text-white/35"
         >
           Assigned User
         </label>
@@ -135,11 +135,11 @@ export default function LeadActions({
           onChange={(event) =>
             setAssignedUserId(event.target.value)
           }
-          className="mt-2 w-full rounded-xl border border-white/10 bg-[#080c1e] px-3 py-2.5 text-sm text-white outline-none transition focus:border-[#7357ff]/50 disabled:opacity-50"
+          className="mt-2 w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#080c1e] px-3 py-2.5 text-sm text-slate-900 dark:text-white outline-none transition focus:border-[#7357ff]/50 disabled:opacity-50"
         >
           <option
             value=""
-            className="bg-[#111528]"
+            className="bg-white dark:bg-[#111528]"
           >
             Unassigned
           </option>
@@ -148,7 +148,7 @@ export default function LeadActions({
             <option
               key={user.id}
               value={user.id}
-              className="bg-[#111528]"
+              className="bg-white dark:bg-[#111528]"
             >
               {user.name} — {user.email}
             </option>
@@ -156,7 +156,7 @@ export default function LeadActions({
         </select>
 
         {users.length === 0 && (
-          <p className="mt-2 text-xs text-white/30">
+          <p className="mt-2 text-xs text-slate-400 dark:text-white/30">
             No active users available.
           </p>
         )}
@@ -178,7 +178,7 @@ export default function LeadActions({
       </button>
 
       {message && (
-        <p className="text-xs text-white/45">
+        <p className="text-xs text-slate-500 dark:text-white/45">
           {message}
         </p>
       )}

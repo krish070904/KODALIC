@@ -32,7 +32,14 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  const pathname = request.nextUrl.pathname;
+  if (!user && pathname.startsWith("/admin") && pathname !== "/admin/login") {
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/admin/login";
+    return NextResponse.redirect(loginUrl);
+  }
 
   return response;
 }

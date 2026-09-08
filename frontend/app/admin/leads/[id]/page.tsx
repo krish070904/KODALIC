@@ -2,15 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requirePermission } from "../../../../lib/auth/require-permission";
 import { requireAAL2 } from "../../../../lib/auth/require-aal2";
-import { getAdminUser } from "../../../../lib/auth/get-admin-user";
 import { getAdminLead } from "../../../../lib/auth/get-admin-lead";
-import { getAdminNavigation } from "../../../../lib/auth/get-admin-navigation";
 import { getAdminUsers } from "../../../../lib/auth/get-admin-users";
 import { getAdminLeadNotes } from "../../../../lib/auth/get-admin-lead-notes";
 import { getAdminLeadActivity } from "../../../../lib/auth/get-admin-lead-activity";
 import LeadNotes from "../../../../components/admin/lead-notes";
 import LeadActivity from "../../../../components/admin/lead-activity";
-import AdminSidebar from "../../../../components/admin/sidebar";
 import LeadActions from "../../../../components/admin/lead-actions";
 
 type LeadDetailPageProps = {
@@ -49,22 +46,22 @@ function formatJson(value: Record<string, unknown>): string {
 function getStatusClasses(status: string): string {
   switch (status) {
     case "new":
-      return "border-blue-400/20 bg-blue-400/10 text-blue-200";
+      return "border-blue-500/20 bg-blue-500/10 text-blue-700 dark:border-blue-400/20 dark:bg-blue-400/10 dark:text-blue-200";
 
     case "reviewed":
-      return "border-amber-400/20 bg-amber-400/10 text-amber-200";
+      return "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-200";
 
     case "transferred_to_crm":
-      return "border-purple-400/20 bg-purple-400/10 text-purple-200";
+      return "border-purple-500/20 bg-purple-500/10 text-purple-700 dark:border-purple-400/20 dark:bg-purple-400/10 dark:text-purple-200";
 
     case "archived":
-      return "border-white/10 bg-white/[0.05] text-white/50";
+      return "border-slate-300 bg-slate-100 text-slate-500 dark:border-white/10 dark:bg-white/[0.05] dark:text-white/50";
 
     case "spam":
-      return "border-red-400/20 bg-red-400/10 text-red-200";
+      return "border-red-500/20 bg-red-500/10 text-red-700 dark:border-red-400/20 dark:bg-red-400/10 dark:text-red-200";
 
     default:
-      return "border-white/10 bg-white/[0.05] text-white/60";
+      return "border-slate-300 bg-slate-100 text-slate-500 dark:border-white/10 dark:bg-white/[0.05] dark:text-white/60";
   }
 }
 
@@ -74,8 +71,6 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
 
   const { id } = await params;
 
-  const adminUser = await getAdminUser();
-  const navigation = await getAdminNavigation();
   const lead = await getAdminLead(id);
   const users = await getAdminUsers();
   const notes = await getAdminLeadNotes(id);
@@ -90,31 +85,15 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
 
   const phone = getStringValue(lead.contact_fields?.phone);
   return (
-    <div className="min-h-screen bg-[#080c1e] text-white">
-      {/* ================================================== */}
-      {/* SIDEBAR */}
-      {/* ================================================== */}
+    <div className="p-6 lg:p-8">
+      <div className="mx-auto max-w-7xl">
+        {/* ================================================== */}
+        {/* BACK */}
+        {/* ================================================== */}
 
-      <AdminSidebar
-        name={adminUser.name}
-        email={adminUser.email}
-        role={adminUser.role}
-        navigation={navigation}
-      />
-
-      {/* ================================================== */}
-      {/* MAIN */}
-      {/* ================================================== */}
-
-      <main className="min-h-screen ml-64 px-8 py-8">
-        <div className="mx-auto max-w-7xl">
-          {/* ================================================== */}
-          {/* BACK */}
-          {/* ================================================== */}
-
-          <Link
+        <Link
             href="/admin/leads"
-            className="inline-flex items-center text-sm text-white/45 transition hover:text-white"
+            className="inline-flex items-center text-sm text-slate-500 dark:text-white/45 transition hover:text-slate-900 dark:hover:text-white"
           >
             ← Back to leads
           </Link>
@@ -125,20 +104,20 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
 
           <div className="mt-6 flex flex-wrap items-start justify-between gap-6">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#7357ff]/15 text-lg font-semibold text-[#b8a8ff]">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#7357ff]/15 text-lg font-semibold text-[#5b3df5] dark:text-[#b8a8ff]">
                 {name.charAt(0).toUpperCase()}
               </div>
 
               <div>
-                <p className="text-xs uppercase tracking-wider text-white/35">
+                <p className="text-xs uppercase tracking-wider text-slate-400 dark:text-white/35">
                   Lead
                 </p>
 
-                <h1 className="mt-1 text-3xl font-semibold tracking-tight">
+                <h1 className="mt-1 text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
                   {name}
                 </h1>
 
-                {email && <p className="mt-1 text-sm text-white/40">{email}</p>}
+                {email && <p className="mt-1 text-sm text-slate-500 dark:text-white/40">{email}</p>}
               </div>
             </div>
 
@@ -163,40 +142,40 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
             <div className="space-y-6">
               {/* Contact */}
 
-              <section className="rounded-2xl border border-white/10 bg-[#111528]">
-                <div className="border-b border-white/10 px-6 py-5">
-                  <h2 className="text-base font-semibold">
+              <section className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111528] shadow-sm dark:shadow-none transition-colors duration-200">
+                <div className="border-b border-slate-200 dark:border-white/10 px-6 py-5">
+                  <h2 className="text-base font-semibold text-slate-900 dark:text-white">
                     Contact Information
                   </h2>
                 </div>
 
                 <div className="grid gap-5 p-6 sm:grid-cols-2">
                   <div>
-                    <p className="text-xs text-white/35">Name</p>
+                    <p className="text-xs text-slate-400 dark:text-white/35">Name</p>
 
-                    <p className="mt-1 text-sm text-white/75">{name}</p>
+                    <p className="mt-1 text-sm text-slate-700 dark:text-white/75">{name}</p>
                   </div>
 
                   <div>
-                    <p className="text-xs text-white/35">Email</p>
+                    <p className="text-xs text-slate-400 dark:text-white/35">Email</p>
 
-                    <p className="mt-1 break-all text-sm text-white/75">
+                    <p className="mt-1 break-all text-sm text-slate-700 dark:text-white/75">
                       {email ?? "Not provided"}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs text-white/35">Phone</p>
+                    <p className="text-xs text-slate-400 dark:text-white/35">Phone</p>
 
-                    <p className="mt-1 text-sm text-white/75">
+                    <p className="mt-1 text-sm text-slate-700 dark:text-white/75">
                       {phone ?? "Not provided"}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs text-white/35">Received</p>
+                    <p className="text-xs text-slate-400 dark:text-white/35">Received</p>
 
-                    <p className="mt-1 text-sm text-white/75">
+                    <p className="mt-1 text-sm text-slate-700 dark:text-white/75">
                       {formatDate(lead.created_at)}
                     </p>
                   </div>
@@ -205,35 +184,35 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
 
               {/* Enquiry */}
 
-              <section className="rounded-2xl border border-white/10 bg-[#111528]">
-                <div className="border-b border-white/10 px-6 py-5">
-                  <h2 className="text-base font-semibold">Enquiry</h2>
+              <section className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111528] shadow-sm dark:shadow-none transition-colors duration-200">
+                <div className="border-b border-slate-200 dark:border-white/10 px-6 py-5">
+                  <h2 className="text-base font-semibold text-slate-900 dark:text-white">Enquiry</h2>
                 </div>
 
                 <div className="space-y-5 p-6">
                   <div className="grid gap-5 sm:grid-cols-2">
                     <div>
-                      <p className="text-xs text-white/35">Service</p>
+                      <p className="text-xs text-slate-400 dark:text-white/35">Service</p>
 
-                      <p className="mt-1 text-sm text-white/75">
+                      <p className="mt-1 text-sm text-slate-700 dark:text-white/75">
                         {lead.service ?? "Not specified"}
                       </p>
                     </div>
 
                     <div>
-                      <p className="text-xs text-white/35">Budget</p>
+                      <p className="text-xs text-slate-400 dark:text-white/35">Budget</p>
 
-                      <p className="mt-1 text-sm text-white/75">
+                      <p className="mt-1 text-sm text-slate-700 dark:text-white/75">
                         {lead.budget ?? "Not specified"}
                       </p>
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-xs text-white/35">Message</p>
+                    <p className="text-xs text-slate-400 dark:text-white/35">Message</p>
 
-                    <div className="mt-2 rounded-xl border border-white/10 bg-black/10 p-4">
-                      <p className="whitespace-pre-wrap text-sm leading-6 text-white/70">
+                    <div className="mt-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/10 p-4">
+                      <p className="whitespace-pre-wrap text-sm leading-6 text-slate-600 dark:text-white/70">
                         {lead.message}
                       </p>
                     </div>
@@ -243,32 +222,32 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
 
               {/* Source */}
 
-              <section className="rounded-2xl border border-white/10 bg-[#111528]">
-                <div className="border-b border-white/10 px-6 py-5">
-                  <h2 className="text-base font-semibold">Attribution</h2>
+              <section className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111528] shadow-sm dark:shadow-none transition-colors duration-200">
+                <div className="border-b border-slate-200 dark:border-white/10 px-6 py-5">
+                  <h2 className="text-base font-semibold text-slate-900 dark:text-white">Attribution</h2>
                 </div>
 
                 <div className="grid gap-5 p-6 sm:grid-cols-2">
                   <div>
-                    <p className="text-xs text-white/35">Source</p>
+                    <p className="text-xs text-slate-400 dark:text-white/35">Source</p>
 
-                    <p className="mt-1 text-sm text-white/70">
+                    <p className="mt-1 text-sm text-slate-600 dark:text-white/70">
                       {lead.source ?? "Unknown"}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs text-white/35">Landing Page</p>
+                    <p className="text-xs text-slate-400 dark:text-white/35">Landing Page</p>
 
-                    <p className="mt-1 break-all text-sm text-white/70">
+                    <p className="mt-1 break-all text-sm text-slate-600 dark:text-white/70">
                       {lead.landing_page ?? "Unknown"}
                     </p>
                   </div>
 
                   <div className="sm:col-span-2">
-                    <p className="text-xs text-white/35">UTM Data</p>
+                    <p className="text-xs text-slate-400 dark:text-white/35">UTM Data</p>
 
-                    <pre className="mt-2 overflow-x-auto rounded-xl border border-white/10 bg-black/20 p-4 text-xs leading-5 text-white/50">
+                    <pre className="mt-2 overflow-x-auto rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/20 p-4 text-xs leading-5 text-slate-500 dark:text-white/50">
                       {formatJson(lead.utm)}
                     </pre>
                   </div>
@@ -289,11 +268,11 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
             <div className="space-y-6">
               {/* Status / Actions */}
 
-              <section className="rounded-2xl border border-white/10 bg-[#111528]">
-                <div className="border-b border-white/10 px-6 py-5">
-                  <h2 className="text-base font-semibold">Lead Actions</h2>
+              <section className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111528] shadow-sm dark:shadow-none transition-colors duration-200">
+                <div className="border-b border-slate-200 dark:border-white/10 px-6 py-5">
+                  <h2 className="text-base font-semibold text-slate-900 dark:text-white">Lead Actions</h2>
 
-                  <p className="mt-1 text-xs text-white/40">
+                  <p className="mt-1 text-xs text-slate-400 dark:text-white/40">
                     Update the lead status and assignment.
                   </p>
                 </div>
@@ -311,15 +290,15 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
 
               {/* CRM */}
 
-              <section className="rounded-2xl border border-white/10 bg-[#111528]">
-                <div className="border-b border-white/10 px-6 py-5">
-                  <h2 className="text-base font-semibold">CRM</h2>
+              <section className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111528] shadow-sm dark:shadow-none transition-colors duration-200">
+                <div className="border-b border-slate-200 dark:border-white/10 px-6 py-5">
+                  <h2 className="text-base font-semibold text-slate-900 dark:text-white">CRM</h2>
                 </div>
 
                 <div className="p-6">
-                  <p className="text-xs text-white/35">External CRM ID</p>
+                  <p className="text-xs text-slate-400 dark:text-white/35">External CRM ID</p>
 
-                  <p className="mt-1 break-all text-sm text-white/70">
+                  <p className="mt-1 break-all text-sm text-slate-600 dark:text-white/70">
                     {lead.crm_external_id ?? "Not transferred"}
                   </p>
                 </div>
@@ -327,24 +306,24 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
 
               {/* Timestamps */}
 
-              <section className="rounded-2xl border border-white/10 bg-[#111528]">
-                <div className="border-b border-white/10 px-6 py-5">
-                  <h2 className="text-base font-semibold">Record</h2>
+              <section className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111528] shadow-sm dark:shadow-none transition-colors duration-200">
+                <div className="border-b border-slate-200 dark:border-white/10 px-6 py-5">
+                  <h2 className="text-base font-semibold text-slate-900 dark:text-white">Record</h2>
                 </div>
 
                 <div className="space-y-4 p-6">
                   <div>
-                    <p className="text-xs text-white/35">Created</p>
+                    <p className="text-xs text-slate-400 dark:text-white/35">Created</p>
 
-                    <p className="mt-1 text-xs text-white/60">
+                    <p className="mt-1 text-xs text-slate-500 dark:text-white/60">
                       {formatDate(lead.created_at)}
                     </p>
                   </div>
 
                   <div>
-                    <p className="text-xs text-white/35">Last Updated</p>
+                    <p className="text-xs text-slate-400 dark:text-white/35">Last Updated</p>
 
-                    <p className="mt-1 text-xs text-white/60">
+                    <p className="mt-1 text-xs text-slate-500 dark:text-white/60">
                       {formatDate(lead.updated_at)}
                     </p>
                   </div>
@@ -353,7 +332,6 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
   );
 }

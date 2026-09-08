@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "../../lib/supabase/server";
+import { buildPublicMetadata } from "../../lib/seo/build-public-metadata";
 
 type BlogPost = {
   slug: string;
@@ -45,12 +46,18 @@ function getReadingTime(content: string) {
   return `${minutes} min read`;
 }
 
-export const metadata: Metadata = {
+const DEFAULT_METADATA = {
   title: "Blog",
-  description: "Insights on web development, AI, automation, and digital products from Kodalic.",
-  alternates: { canonical: "/blog" },
-  openGraph: { title: "Blog | Kodalic", description: "Insights on web development, AI, automation, and digital products from Kodalic.", url: "/blog", type: "website" },
-  twitter: { card: "summary_large_image", title: "Blog | Kodalic", description: "Insights on web development, AI, automation, and digital products from Kodalic." },
+  description:
+    "Insights on web development, AI, automation, and digital products from Kodalic.",
+};
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPublicMetadata({
+    path: "/blog",
+    defaultTitle: DEFAULT_METADATA.title,
+    defaultDescription: DEFAULT_METADATA.description,
+  });
 };
 
 export default async function BlogIndex() {

@@ -37,12 +37,6 @@ export const adminNavigation: AdminNavigationItem[] = [
     icon: "blog",
   },
   {
-    label: "Content",
-    href: "/admin/content",
-    permission: "content.view",
-    icon: "content",
-  },
-  {
     label: "Media",
     href: "/admin/media",
     permission: "media.view",

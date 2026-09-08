@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { useTheme } from "../../app/theme-provider";
 
 type LeadOverviewPoint = {
   day: string;
@@ -12,6 +13,8 @@ type LeadOverviewChartProps = {
 };
 
 export default function LeadOverviewChart({ data }: LeadOverviewChartProps) {
+  const { isDark } = useTheme();
+
   const chart = useMemo(() => {
     if (!data.length) {
       return null;
@@ -76,7 +79,7 @@ export default function LeadOverviewChart({ data }: LeadOverviewChartProps) {
   if (!chart) {
     return (
       <div className="flex min-h-[280px] items-center justify-center">
-        <p className="text-sm text-white/35">No lead activity yet.</p>
+        <p className="text-sm text-slate-400 dark:text-white/35">No lead activity yet.</p>
       </div>
     );
   }
@@ -93,6 +96,12 @@ export default function LeadOverviewChart({ data }: LeadOverviewChartProps) {
   const gridLines = 4;
 
   const yAxisMax = chart.maxValue <= 4 ? 4 : Math.ceil(chart.maxValue / 4) * 4;
+
+  // Theme-aware colors for SVG elements
+  const gridColor = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.08)";
+  const labelClass = isDark ? "fill-white/30 text-[11px]" : "fill-slate-400 text-[11px]";
+  const areaFill = isDark ? "rgba(115,87,255,0.12)" : "rgba(115,87,255,0.08)";
+  const pointFill = isDark ? "#080c1e" : "#ffffff";
 
   return (
     <div className="w-full px-5 pb-5 pt-4">
@@ -120,7 +129,7 @@ export default function LeadOverviewChart({ data }: LeadOverviewChartProps) {
                   x2={chart.width - chart.padding.right}
                   y1={y}
                   y2={y}
-                  stroke="rgba(255,255,255,0.07)"
+                  stroke={gridColor}
                   strokeWidth="1"
                 />
 
@@ -128,7 +137,7 @@ export default function LeadOverviewChart({ data }: LeadOverviewChartProps) {
                   x={chart.padding.left - 10}
                   y={y + 4}
                   textAnchor="end"
-                  className="fill-white/30 text-[11px]"
+                  className={labelClass}
                 >
                   {value}
                 </text>
@@ -137,7 +146,7 @@ export default function LeadOverviewChart({ data }: LeadOverviewChartProps) {
           })}
 
           {/* Area */}
-          <path d={chart.areaPath} fill="rgba(115,87,255,0.12)" />
+          <path d={chart.areaPath} fill={areaFill} />
 
           {/* Line */}
           <path
@@ -156,7 +165,7 @@ export default function LeadOverviewChart({ data }: LeadOverviewChartProps) {
               cx={point.x}
               cy={point.y}
               r="4"
-              fill="#080c1e"
+              fill={pointFill}
               stroke="#8b6cff"
               strokeWidth="2"
             />
@@ -169,7 +178,7 @@ export default function LeadOverviewChart({ data }: LeadOverviewChartProps) {
               x={point.x}
               y={chart.height - 14}
               textAnchor="middle"
-              className="fill-white/30 text-[11px]"
+              className={labelClass}
             >
               {formatDate(point.day)}
             </text>
@@ -178,19 +187,19 @@ export default function LeadOverviewChart({ data }: LeadOverviewChartProps) {
       </div>
 
       {/* Summary */}
-      <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-4">
+      <div className="mt-4 flex items-center justify-between border-t border-slate-200 dark:border-white/10 pt-4">
         <div>
-          <p className="text-xs text-white/35">Total in period</p>
+          <p className="text-xs text-slate-400 dark:text-white/35">Total in period</p>
 
-          <p className="mt-1 text-lg font-semibold">
+          <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
             {data.reduce((total, item) => total + item.lead_count, 0)}
           </p>
         </div>
 
         <div className="text-right">
-          <p className="text-xs text-white/35">Peak day</p>
+          <p className="text-xs text-slate-400 dark:text-white/35">Peak day</p>
 
-          <p className="mt-1 text-sm font-medium">
+          <p className="mt-1 text-sm font-medium text-slate-700 dark:text-white">
             {formatDate(
               data.reduce(
                 (peak, item) =>

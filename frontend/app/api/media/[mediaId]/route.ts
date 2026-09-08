@@ -43,8 +43,12 @@ export async function GET(
   // Download the file directly instead of redirecting to a signed URL.
   // Redirects to Supabase signed URLs break on many mobile browsers
   // because img tags don't reliably follow 302 redirects across origins.
+  const bucket = media.storage_key.includes("/")
+    ? "case-study-media"
+    : "media";
+
   const { data: fileData, error: downloadError } = await supabase.storage
-    .from("case-study-media")
+    .from(bucket)
     .download(media.storage_key);
 
   if (downloadError || !fileData) {

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { createClient } from "../../../../lib/supabase/client";
+import Link from "next/link";
+import { ArrowLeft, ShieldCheck, KeyRound, CheckCircle2, AlertCircle } from "lucide-react";
 
 type TotpEnrollment = {
   id: string;
@@ -91,69 +93,90 @@ export default function MfaPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#080c1e] px-6 py-16 text-white">
+    <main className="min-h-screen bg-slate-50 dark:bg-[#080c1e] px-6 py-12 text-slate-900 dark:text-white transition-colors duration-200">
       <div className="mx-auto max-w-xl">
-        <p className="text-sm text-white/50">
-          Account Security
-        </p>
+        <Link
+          href="/admin/settings"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-white/60 dark:hover:text-white transition mb-6"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span>Back to Settings</span>
+        </Link>
 
-        <h1 className="mt-2 text-4xl font-semibold">
-          Two-Factor Authentication
-        </h1>
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-xs uppercase tracking-wider text-slate-400 dark:text-white/40 font-medium">
+              Account Security
+            </p>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Two-Factor Authentication (MFA)
+            </h1>
+          </div>
+        </div>
 
-        <p className="mt-4 text-white/60">
-          Secure your Kodalic account with an authenticator app.
+        <p className="mt-4 text-sm text-slate-600 dark:text-white/60 leading-relaxed">
+          Add an extra layer of protection to your Kodalic admin account using an authenticator application.
         </p>
 
         {!enrollment && (
-          <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.04] p-6">
-            <h2 className="text-xl font-semibold">
-              Enable authenticator
+          <div className="mt-8 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111528] p-6 shadow-sm dark:shadow-none">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+              <KeyRound className="h-5 w-5 text-[#5b3df5] dark:text-[#a78bfa]" />
+              <span>Enable Authenticator App</span>
             </h2>
 
-            <p className="mt-3 text-sm leading-6 text-white/60">
+            <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-white/60">
               Use Google Authenticator, Microsoft Authenticator, Authy,
-              1Password, or another TOTP-compatible authenticator app.
+              1Password, or any standard TOTP-compatible application.
             </p>
 
             <button
               type="button"
               onClick={startEnrollment}
               disabled={loading}
-              className="mt-6 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-6 rounded-xl bg-[#5b3df5] hover:bg-[#4c2ee3] px-5 py-2.5 text-xs font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {loading ? "Generating..." : "Set up authenticator"}
+              {loading ? "Generating Secret..." : "Set Up Authenticator"}
             </button>
           </div>
         )}
 
         {enrollment && (
           <div className="mt-8 space-y-6">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
-              <h2 className="text-xl font-semibold">
+            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111528] p-6 shadow-sm dark:shadow-none">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                 1. Scan the QR code
               </h2>
 
-              <p className="mt-3 text-sm text-white/60">
+              <p className="mt-2 text-sm text-slate-600 dark:text-white/60">
                 Open your authenticator app and scan this QR code.
               </p>
 
               <div
-                className="mx-auto mt-6 w-fit rounded-2xl bg-white p-4"
+                className="mx-auto mt-6 w-fit rounded-2xl bg-white p-4 border border-slate-200 dark:border-none shadow-md"
                 dangerouslySetInnerHTML={{
                   __html: enrollment.qr_code,
                 }}
               />
+
+              <div className="mt-4 text-center">
+                <p className="text-[11px] uppercase tracking-wider text-slate-400 dark:text-white/30">Manual Secret Key</p>
+                <code className="mt-1 inline-block rounded bg-slate-100 dark:bg-black/40 px-3 py-1 font-mono text-xs text-slate-800 dark:text-white/80">
+                  {enrollment.secret}
+                </code>
+              </div>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
-              <h2 className="text-xl font-semibold">
-                2. Enter the verification code
+            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111528] p-6 shadow-sm dark:shadow-none">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+                2. Enter verification code
               </h2>
 
-              <p className="mt-3 text-sm text-white/60">
-                Enter the current 6-digit code shown in your authenticator
-                app.
+              <p className="mt-2 text-sm text-slate-600 dark:text-white/60">
+                Enter the current 6-digit security code generated by your authenticator app.
               </p>
 
               <input
@@ -166,30 +189,32 @@ export default function MfaPage() {
                   setCode(event.target.value.replace(/\D/g, ""))
                 }
                 placeholder="000000"
-                className="mt-6 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-center text-2xl tracking-[0.5em] text-white outline-none placeholder:text-white/20 focus:border-white/30"
+                className="mt-6 w-full rounded-xl border border-slate-300 dark:border-white/10 bg-slate-50 dark:bg-black/30 px-4 py-3 text-center text-2xl tracking-[0.5em] text-slate-900 dark:text-white outline-none placeholder:text-slate-300 dark:placeholder:text-white/20 focus:border-[#7c5dff] focus:ring-2 focus:ring-[#7c5dff]/20 transition"
               />
 
               <button
                 type="button"
                 onClick={verifyEnrollment}
                 disabled={loading || code.length !== 6}
-                className="mt-5 w-full rounded-xl bg-white px-5 py-3 text-sm font-semibold text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-5 w-full rounded-xl bg-[#5b3df5] hover:bg-[#4c2ee3] px-5 py-3 text-xs font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {loading ? "Verifying..." : "Verify and enable 2FA"}
+                {loading ? "Verifying..." : "Verify and Enable 2FA"}
               </button>
             </div>
           </div>
         )}
 
         {error && (
-          <div className="mt-6 rounded-xl border border-red-400/20 bg-red-400/10 p-4 text-sm text-red-200">
-            {error}
+          <div className="mt-6 flex items-center gap-2 rounded-xl border border-rose-500/20 bg-rose-500/10 p-4 text-xs font-medium text-rose-700 dark:text-rose-300">
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            <span>{error}</span>
           </div>
         )}
 
         {message && (
-          <div className="mt-6 rounded-xl border border-green-400/20 bg-green-400/10 p-4 text-sm text-green-200">
-            {message}
+          <div className="mt-6 flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+            <CheckCircle2 className="h-4 w-4 shrink-0" />
+            <span>{message}</span>
           </div>
         )}
       </div>

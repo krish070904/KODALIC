@@ -72,13 +72,13 @@ export default function LeadNotes({
   }
 
   return (
-    <section className="rounded-2xl border border-white/10 bg-[#111528]">
-      <div className="border-b border-white/10 px-6 py-5">
-        <h2 className="text-base font-semibold">
+    <section className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111528] shadow-sm dark:shadow-none transition-colors duration-200">
+      <div className="border-b border-slate-200 dark:border-white/10 px-6 py-5">
+        <h2 className="text-base font-semibold text-slate-900 dark:text-white">
           Internal Notes
         </h2>
 
-        <p className="mt-1 text-xs text-white/40">
+        <p className="mt-1 text-xs text-slate-400 dark:text-white/40">
           Private notes for the Kodalic team.
         </p>
       </div>
@@ -93,11 +93,11 @@ export default function LeadNotes({
             placeholder="Write an internal note..."
             rows={4}
             disabled={isPending}
-            className="w-full resize-none rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-[#7357ff]/50 disabled:opacity-50"
+            className="w-full resize-none rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/20 px-4 py-3 text-sm text-slate-900 dark:text-white outline-none placeholder:text-slate-400 dark:placeholder:text-white/25 focus:border-[#7357ff]/50 disabled:opacity-50 transition-colors"
           />
 
           {error && (
-            <p className="mt-2 text-xs text-red-300">
+            <p className="mt-2 text-xs text-red-600 dark:text-red-300">
               {error}
             </p>
           )}
@@ -117,8 +117,8 @@ export default function LeadNotes({
 
         <div className="mt-6 space-y-4">
           {notes.length === 0 ? (
-            <div className="rounded-xl border border-white/10 bg-white/[0.02] px-4 py-8 text-center">
-              <p className="text-sm text-white/35">
+            <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02] px-4 py-8 text-center">
+              <p className="text-sm text-slate-400 dark:text-white/35">
                 No internal notes yet.
               </p>
             </div>
@@ -126,19 +126,19 @@ export default function LeadNotes({
             notes.map((note) => (
               <div
                 key={note.id}
-                className="rounded-xl border border-white/10 bg-white/[0.03] p-4"
+                className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.03] p-4 transition-colors duration-200"
               >
                 <div className="flex items-center justify-between gap-4">
-                  <p className="text-xs font-medium text-white/70">
+                  <p className="text-xs font-medium text-slate-600 dark:text-white/70">
                     {note.author_name}
                   </p>
 
-                  <p className="shrink-0 text-[11px] text-white/30">
+                  <p className="shrink-0 text-[11px] text-slate-400 dark:text-white/30">
                     {formatDate(note.created_at)}
                   </p>
                 </div>
 
-                <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-white/60">
+                <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-500 dark:text-white/60">
                   {note.note}
                 </p>
               </div>

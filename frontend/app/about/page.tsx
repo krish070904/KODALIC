@@ -1,22 +1,21 @@
 import type { Metadata } from "next";
 import AboutPageClient from "./AboutPageClient";
 import Navbar from "../components/Navbar";
+import { buildPublicMetadata } from "../../lib/seo/build-public-metadata";
 
-export const metadata: Metadata = {
+const DEFAULT_METADATA = {
   title: "About Kodalic | Technology Solutions Company in Mumbai",
   description:
     "Learn about Kodalic, a technology solutions company founded in 2019 in Mumbai, helping businesses with websites, software, automation, AI and digital growth.",
-  alternates: {
-    canonical: "/about",
-  },
-  openGraph: {
-    title: "About Kodalic | Technology Solutions Company in Mumbai",
-    description:
-      "Learn about Kodalic, a technology solutions company founded in 2019 in Mumbai, helping businesses with websites, software, automation, AI and digital growth.",
-    url: "/about",
-    type: "website",
-  },
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPublicMetadata({
+    path: "/about",
+    defaultTitle: DEFAULT_METADATA.title,
+    defaultDescription: DEFAULT_METADATA.description,
+  });
+}
 
 const aboutPageSchema = {
   "@context": "https://schema.org",

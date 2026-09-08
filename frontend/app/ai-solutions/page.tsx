@@ -1,14 +1,20 @@
 import type { Metadata } from "next";
 import AiSolutionsClient from "./AiSolutionsClient";
+import { buildPublicMetadata } from "../../lib/seo/build-public-metadata";
 
-export const metadata: Metadata = {
+const DEFAULT_METADATA = {
   title: "AI Solutions | Kodalic",
   description:
     "Custom AI solutions, intelligent workflows and automation designed for real business impact.",
-  alternates: {
-    canonical: "/ai-solutions",
-  },
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPublicMetadata({
+    path: "/ai-solutions",
+    defaultTitle: DEFAULT_METADATA.title,
+    defaultDescription: DEFAULT_METADATA.description,
+  });
+}
 
 export default function AiSolutionsPage() {
   return <AiSolutionsClient />;

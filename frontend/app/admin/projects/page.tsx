@@ -1,24 +1,21 @@
 import Link from "next/link";
 import { requirePermission } from "../../../lib/auth/require-permission";
 import { requireAAL2 } from "../../../lib/auth/require-aal2";
-import { getAdminUser } from "../../../lib/auth/get-admin-user";
-import { getAdminNavigation } from "../../../lib/auth/get-admin-navigation";
 import { getAdminProjects } from "../../../lib/auth/get-admin-projects";
-import AdminSidebar from "../../../components/admin/sidebar";
 
 function getStatusClasses(status: string): string {
   switch (status) {
     case "published":
-      return "border-emerald-400/20 bg-emerald-400/10 text-emerald-300";
+      return "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:border-emerald-400/20 dark:bg-emerald-400/10 dark:text-emerald-300";
 
     case "draft":
-      return "border-amber-400/20 bg-amber-400/10 text-amber-300";
+      return "border-amber-500/20 bg-amber-500/10 text-amber-700 dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-300";
 
     case "archived":
-      return "border-white/10 bg-white/[0.05] text-white/50";
+      return "border-slate-300 bg-slate-100 text-slate-500 dark:border-white/10 dark:bg-white/[0.05] dark:text-white/50";
 
     default:
-      return "border-white/10 bg-white/[0.05] text-white/60";
+      return "border-slate-300 bg-slate-100 text-slate-500 dark:border-white/10 dark:bg-white/[0.05] dark:text-white/60";
   }
 }
 
@@ -46,29 +43,11 @@ export default async function ProjectsPage() {
   await requirePermission("projects.view");
   await requireAAL2();
 
-  const adminUser = await getAdminUser();
-  const navigation = await getAdminNavigation();
   const projects = await getAdminProjects();
 
   return (
-    <div className="min-h-screen bg-[#080c1e] text-white">
-      {/* ================================================== */}
-      {/* SIDEBAR */}
-      {/* ================================================== */}
-
-      <AdminSidebar
-        name={adminUser.name}
-        email={adminUser.email}
-        role={adminUser.role}
-        navigation={navigation}
-      />
-
-      {/* ================================================== */}
-      {/* MAIN */}
-      {/* ================================================== */}
-
-      <main className="min-h-screen ml-64 px-8 py-8">
-        <div className="mx-auto max-w-7xl">
+    <div className="p-6 lg:p-8">
+      <div className="mx-auto max-w-7xl">
 
           {/* ================================================== */}
           {/* HEADER */}
@@ -76,15 +55,15 @@ export default async function ProjectsPage() {
 
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
-              <p className="text-xs uppercase tracking-wider text-white/35">
+              <p className="text-xs uppercase tracking-wider text-slate-400 dark:text-white/35">
                 Portfolio
               </p>
 
-              <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
                 Projects
               </h1>
 
-              <p className="mt-2 text-sm text-white/45">
+              <p className="mt-2 text-sm text-slate-500 dark:text-white/45">
                 Manage the projects displayed across the Kodalic portfolio.
               </p>
             </div>
@@ -101,15 +80,15 @@ export default async function ProjectsPage() {
           {/* PROJECT LIST */}
           {/* ================================================== */}
 
-          <section className="mt-8 rounded-2xl border border-white/10 bg-[#111528]">
+          <section className="mt-8 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111528] shadow-sm dark:shadow-none transition-colors duration-200">
 
-            <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 px-6 py-5">
               <div>
-                <h2 className="text-base font-semibold">
+                <h2 className="text-base font-semibold text-slate-900 dark:text-white">
                   All Projects
                 </h2>
 
-                <p className="mt-1 text-xs text-white/40">
+                <p className="mt-1 text-xs text-slate-400 dark:text-white/40">
                   {projects.length}{" "}
                   {projects.length === 1 ? "project" : "projects"}
                 </p>
@@ -119,25 +98,25 @@ export default async function ProjectsPage() {
             {projects.length === 0 ? (
               <div className="flex min-h-[280px] items-center justify-center px-6">
                 <div className="text-center">
-                  <p className="text-sm text-white/40">
+                  <p className="text-sm text-slate-400 dark:text-white/40">
                     No projects yet.
                   </p>
 
                   <Link
                     href="/admin/projects/new"
-                    className="mt-4 inline-flex rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-medium text-white/70 transition hover:bg-white/[0.08] hover:text-white"
+                    className="mt-4 inline-flex rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.04] px-4 py-2 text-xs font-medium text-slate-600 dark:text-white/70 transition hover:bg-slate-100 dark:hover:bg-white/[0.08] hover:text-slate-900 dark:hover:text-white"
                   >
                     Create your first project
                   </Link>
                 </div>
               </div>
             ) : (
-              <div className="divide-y divide-white/10">
+              <div className="divide-y divide-slate-200 dark:divide-white/10">
 
                 {projects.map((project) => (
                   <div
                     key={project.id}
-                    className="flex flex-col gap-5 px-6 py-5 transition hover:bg-white/[0.02] lg:flex-row lg:items-center"
+                    className="flex flex-col gap-5 px-6 py-5 transition hover:bg-slate-50 dark:hover:bg-white/[0.02] lg:flex-row lg:items-center"
                   >
 
                     {/* Project information */}
@@ -146,7 +125,7 @@ export default async function ProjectsPage() {
 
                       <div className="flex flex-wrap items-center gap-3">
 
-                        <h3 className="truncate text-sm font-semibold text-white">
+                        <h3 className="truncate text-sm font-semibold text-slate-900 dark:text-white">
                           {project.title}
                         </h3>
 
@@ -162,18 +141,18 @@ export default async function ProjectsPage() {
                         </span>
 
                         {project.featured && (
-                          <span className="rounded-full border border-purple-400/20 bg-purple-400/10 px-2.5 py-1 text-[11px] font-medium text-purple-300">
+                          <span className="rounded-full border border-purple-500/20 bg-purple-500/10 px-2.5 py-1 text-[11px] font-medium text-purple-700 dark:border-purple-400/20 dark:bg-purple-400/10 dark:text-purple-300">
                             Featured
                           </span>
                         )}
 
                       </div>
 
-                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-white/45">
+                      <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-500 dark:text-white/45">
                         {project.description}
                       </p>
 
-                      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs text-white/30">
+                      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-400 dark:text-white/30">
 
                         <span>
                           /{project.slug}
@@ -206,7 +185,7 @@ export default async function ProjectsPage() {
 
                       <Link
                         href={`/admin/projects/${project.id}`}
-                        className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-medium text-white/65 transition hover:bg-white/[0.08] hover:text-white"
+                        className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.04] px-4 py-2 text-xs font-medium text-slate-600 dark:text-white/65 transition hover:bg-slate-100 dark:hover:bg-white/[0.08] hover:text-slate-900 dark:hover:text-white"
                       >
                         Edit
                       </Link>
@@ -222,7 +201,6 @@ export default async function ProjectsPage() {
           </section>
 
         </div>
-      </main>
-    </div>
+      </div>
   );
 }

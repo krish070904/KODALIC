@@ -33,7 +33,7 @@ export default async function CaseStudyEditPage({ params }: PageProps) {
 
   if (!caseStudy) {
     return (
-      <main className="min-h-screen bg-[#080c1e] px-6 py-16 text-white">
+      <div className="p-6 lg:p-8">
         <div className="mx-auto max-w-4xl">
           <Link
             href="/admin/case-studies"
@@ -50,7 +50,7 @@ export default async function CaseStudyEditPage({ params }: PageProps) {
             </p>
           </div>
         </div>
-      </main>
+      </div>
     );
   }
 
@@ -114,7 +114,7 @@ export default async function CaseStudyEditPage({ params }: PageProps) {
     throw new Error("Failed to load case study media.");
   }
   return (
-    <main className="min-h-screen bg-[#080c1e] px-6 py-16 text-white">
+    <div className="p-6 lg:p-8">
       <div className="mx-auto max-w-4xl">
         <Link
           href="/admin/case-studies"
@@ -123,11 +123,11 @@ export default async function CaseStudyEditPage({ params }: PageProps) {
           ← Back to Case Studies
         </Link>
 
-        <div className="mt-8">
-          <p className="text-sm text-white/50">Case Studies</p>
+        <div className="mt-6">
+          <p className="text-xs uppercase tracking-wider text-white/35">Case Studies</p>
 
           <div className="mt-2 flex flex-wrap items-center gap-3">
-            <h1 className="text-4xl font-semibold">Edit Case Study</h1>
+            <h1 className="text-3xl font-semibold tracking-tight">Edit Case Study</h1>
 
             <span
               className={`rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide ${
@@ -140,13 +140,13 @@ export default async function CaseStudyEditPage({ params }: PageProps) {
             </span>
           </div>
 
-          <p className="mt-4 text-white/60">
+          <p className="mt-2 text-sm text-white/45">
             Update the content and publishing settings for{" "}
             <span className="text-white/80">{caseStudy.title}</span>.
           </p>
         </div>
 
-        <div className="mt-10">
+        <div className="mt-8">
           <CaseStudyEditForm
             caseStudy={{
               ...caseStudy,
@@ -157,6 +157,6 @@ export default async function CaseStudyEditPage({ params }: PageProps) {
           />
         </div>
       </div>
-    </main>
+    </div>
   );
 }

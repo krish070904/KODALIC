@@ -1,10 +1,21 @@
 import type { Metadata } from "next";
 import { getPublicBlogPosts } from "../lib/blog/get-public-blog-posts";
 import HomeClient from "./home-client";
+import { buildPublicMetadata } from "../lib/seo/build-public-metadata";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/" },
+const DEFAULT_METADATA = {
+  title: "Kodalic — Engineering What Businesses Become Next",
+  description:
+    "Kodalic builds intelligent technology solutions — websites, AI, automation, and digital products — that help businesses evolve, automate, and compete in a digital-first world.",
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPublicMetadata({
+    path: "/",
+    defaultTitle: DEFAULT_METADATA.title,
+    defaultDescription: DEFAULT_METADATA.description,
+  });
+}
 
 export default async function Home() {
   const blogPosts = await getPublicBlogPosts();

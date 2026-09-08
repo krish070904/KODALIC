@@ -8,8 +8,12 @@ import React, {
   useSyncExternalStore,
 } from "react";
 
+export type ThemeMode = "dark" | "light" | "system";
+
 type ThemeContextType = {
+  theme: ThemeMode;
   isDark: boolean;
+  setTheme: (theme: ThemeMode) => void;
   toggleDark: () => void;
 };
 
@@ -17,15 +21,23 @@ const ThemeContext = createContext<ThemeContextType | null>(null);
 
 const MEDIA = "(prefers-color-scheme: dark)";
 
-function readTheme(): boolean {
-  if (typeof window === "undefined") return false;
+function readStoredTheme(): ThemeMode {
+  if (typeof window === "undefined") return "dark";
   try {
     const stored = localStorage.getItem("theme");
-    if (stored === "dark") return true;
-    if (stored === "light") return false;
+    if (stored === "dark" || stored === "light" || stored === "system") {
+      return stored as ThemeMode;
+    }
   } catch {
     /* ignore */
   }
+  return "dark";
+}
+
+function computeIsDark(mode: ThemeMode): boolean {
+  if (typeof window === "undefined") return true;
+  if (mode === "dark") return true;
+  if (mode === "light") return false;
   return window.matchMedia(MEDIA).matches;
 }
 
@@ -45,24 +57,37 @@ function subscribe(callback: () => void) {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const isDark = useSyncExternalStore(subscribe, readTheme, () => false);
+  const theme = useSyncExternalStore(subscribe, readStoredTheme, () => "dark" as ThemeMode);
+  const isDark = computeIsDark(theme);
 
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", isDark);
+    const root = document.documentElement;
+    if (isDark) {
+      root.classList.add("dark");
+      root.classList.remove("light");
+    } else {
+      root.classList.remove("dark");
+      root.classList.add("light");
+    }
   }, [isDark]);
 
-  const toggleDark = useCallback(() => {
-    const next = !readTheme();
+  const setTheme = useCallback((nextTheme: ThemeMode) => {
     try {
-      localStorage.setItem("theme", next ? "dark" : "light");
+      localStorage.setItem("theme", nextTheme);
     } catch {
       /* ignore */
     }
     emit();
   }, []);
 
+  const toggleDark = useCallback(() => {
+    const current = readStoredTheme();
+    const next = computeIsDark(current) ? "light" : "dark";
+    setTheme(next);
+  }, [setTheme]);
+
   return (
-    <ThemeContext.Provider value={{ isDark, toggleDark }}>
+    <ThemeContext.Provider value={{ theme, isDark, setTheme, toggleDark }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -70,6 +95,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
 export function useTheme(): ThemeContextType {
   const ctx = useContext(ThemeContext);
-  if (!ctx) return { isDark: false, toggleDark: () => {} };
+  if (!ctx) {
+    return {
+      theme: "dark",
+      isDark: true,
+      setTheme: () => {},
+      toggleDark: () => {},
+    };
+  }
   return ctx;
 }

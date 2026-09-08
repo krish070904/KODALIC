@@ -71,21 +71,21 @@ export default function LeadActivity({
   activities,
 }: LeadActivityProps) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-[#111528]">
-      <div className="border-b border-white/10 px-6 py-5">
-        <h2 className="text-base font-semibold">
+    <section className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#111528] shadow-sm dark:shadow-none transition-colors duration-200">
+      <div className="border-b border-slate-200 dark:border-white/10 px-6 py-5">
+        <h2 className="text-base font-semibold text-slate-900 dark:text-white">
           Activity
         </h2>
 
-        <p className="mt-1 text-xs text-white/40">
+        <p className="mt-1 text-xs text-slate-400 dark:text-white/40">
           History of actions taken on this lead.
         </p>
       </div>
 
       <div className="p-6">
         {activities.length === 0 ? (
-          <div className="rounded-xl border border-white/10 bg-white/[0.02] px-4 py-8 text-center">
-            <p className="text-sm text-white/35">
+          <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02] px-4 py-8 text-center">
+            <p className="text-sm text-slate-400 dark:text-white/35">
               No activity yet.
             </p>
           </div>
@@ -99,24 +99,24 @@ export default function LeadActivity({
                 <div className="flex flex-col items-center">
                   <span className="mt-1 h-2.5 w-2.5 rounded-full bg-[#7357ff]" />
 
-                  <span className="mt-2 h-full w-px bg-white/10" />
+                  <span className="mt-2 h-full w-px bg-slate-200 dark:bg-white/10" />
                 </div>
 
                 <div className="min-w-0 flex-1 pb-2">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-sm font-medium text-white/80">
+                    <p className="text-sm font-medium text-slate-700 dark:text-white/80">
                       {getActivityText(
                         activity.action,
                         activity.metadata,
                       )}
                     </p>
 
-                    <p className="text-[11px] text-white/30">
+                    <p className="text-[11px] text-slate-400 dark:text-white/30">
                       {formatDate(activity.created_at)}
                     </p>
                   </div>
 
-                  <p className="mt-1 text-xs text-white/35">
+                  <p className="mt-1 text-xs text-slate-400 dark:text-white/35">
                     by {activity.actor_name}
                   </p>
                 </div>

@@ -3,6 +3,13 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
 import { getPublicCaseStudies } from "../../lib/get-public-case-studies";
+import { buildPublicMetadata } from "../../lib/seo/build-public-metadata";
+
+const DEFAULT_METADATA = {
+  title: "Case Studies",
+  description:
+    "Explore Kodalic projects and the stories behind their design, development, and delivery.",
+};
 
 const CATEGORIES = [
   "All",
@@ -20,13 +27,13 @@ function normalizeCategory(category: string) {
   return category;
 }
 
-export const metadata: Metadata = {
-  title: "Case Studies",
-  description: "Explore Kodalic projects and the stories behind their design, development, and delivery.",
-  alternates: { canonical: "/case-studies" },
-  openGraph: { title: "Case Studies | Kodalic", description: "Explore Kodalic projects and the stories behind their design, development, and delivery.", url: "/case-studies", type: "website" },
-  twitter: { card: "summary_large_image", title: "Case Studies | Kodalic", description: "Explore Kodalic projects and the stories behind their design, development, and delivery." },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPublicMetadata({
+    path: "/case-studies",
+    defaultTitle: DEFAULT_METADATA.title,
+    defaultDescription: DEFAULT_METADATA.description,
+  });
+}
 
 export default async function CaseStudiesIndex() {
   const caseStudies = await getPublicCaseStudies();

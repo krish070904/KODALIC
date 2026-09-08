@@ -90,7 +90,7 @@ export interface DemoStat {
 }
 
 export const DEMO_STATS: DemoStat[] = [
-  { value: 123, suffix: "+", label: "Clients Served", demo: false },
+  { value: 156, suffix: "+", label: "Clients Served", demo: false },
   { value: 60, suffix: "+", label: "Doctors Served in India", demo: false },
   { value: 98, suffix: "%", label: "Satisfaction Rate", demo: false },
 ];
@@ -898,7 +898,7 @@ What to do next
 export const DEMO_CONTACT = {
   email: "info@kodalic.com",
   phone: "+91 00000 00000",
-  location: "Remote-first, working worldwide",
+  location: "5th Floor, Raheja Plaza, Opp. R City Mall, LBS Road Ghatkopar West, Mumbai, Maharashtra – 400086",
   availability: "We respond within one business day.",
   responseTime: "Typical reply time is under 24 hours on business days.",
   demo: true as const,

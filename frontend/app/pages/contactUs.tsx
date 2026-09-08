@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Mail, MapPin, Send, CheckCircle2, AlertCircle, Loader2, type LucideIcon } from "lucide-react";
+import { Mail, MapPin, Send, CheckCircle2, AlertCircle, Loader2, User, type LucideIcon } from "lucide-react";
 import { submitContactLead } from "../actions/contact";
 
 interface ContactUsProps {
@@ -80,24 +80,24 @@ const CONTACT_DETAILS: ContactDetail[] = [
     verified: true,
   },
   {
-    icon: Mail,
-    label: "Founder — Aayush Sahu",
-    value: "aayushsahu35491@gmail.com",
-    href: "mailto:aayushsahu35491@gmail.com",
+    icon: User,
+    label: "Founder",
+    value: "Aayush Sahu",
+    href: "mailto:info@kodalic.com",
     verified: true,
   },
   {
-    icon: Mail,
-    label: "Manager — Mukul Joshi",
-    value: "mukuljoshi318@gmail.com",
-    href: "mailto:mukuljoshi318@gmail.com",
+    icon: User,
+    label: "Manager",
+    value: "Mukul Joshi",
+    href: "mailto:info@kodalic.com",
     verified: true,
   },
   {
     icon: MapPin,
-    label: "Location",
-    value: "Remote-first, working worldwide",
-    href: "#",
+    label: "Address",
+    value: "5th Floor, Raheja Plaza, Opp. R City Mall, LBS Road Ghatkopar West, Mumbai, Maharashtra – 400086",
+    href: "https://maps.google.com/?q=Raheja+Plaza+Opp+R+City+Mall+LBS+Road+Ghatkopar+West+Mumbai+400086",
     verified: true,
   },
 ];

@@ -234,15 +234,12 @@ export default function Footer({ isDark, onHeightChange, onToggleDark }: FooterP
             <span className="text-xs leading-relaxed mt-1" style={{ color: textMuted }}>
               Founder: Aayush Sahu
             </span>
-            <a href="mailto:aayushsahu35491@gmail.com" className="text-xs leading-relaxed hover:underline" style={{ color: textMuted }}>
-              aayushsahu35491@gmail.com
-            </a>
             <span className="text-xs leading-relaxed mt-1" style={{ color: textMuted }}>
               Manager: Mukul Joshi
             </span>
-            <a href="mailto:mukuljoshi318@gmail.com" className="text-xs leading-relaxed hover:underline" style={{ color: textMuted }}>
-              mukuljoshi318@gmail.com
-            </a>
+            <p className="text-xs leading-relaxed mt-2" style={{ color: textMuted }}>
+              5th Floor, Raheja Plaza, Opp. R City Mall, LBS Road Ghatkopar West, Mumbai, Maharashtra – 400086
+            </p>
           </FooterColumn>
         </div>
 

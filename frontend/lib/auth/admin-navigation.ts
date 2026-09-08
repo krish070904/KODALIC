@@ -54,4 +54,10 @@ export const adminNavigation: AdminNavigationItem[] = [
     permission: "analytics.view",
     icon: "analytics",
   },
+  {
+    label: "Users & Roles",
+    href: "/admin/users",
+    permission: "users.view",
+    icon: "users",
+  },
 ];

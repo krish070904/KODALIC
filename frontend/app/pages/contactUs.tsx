@@ -1,15 +1,15 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Mail, MapPin, Send, CheckCircle2, type LucideIcon } from "lucide-react";
-import { DEMO_MODE } from "../data/demoData";
+import { Mail, MapPin, Send, CheckCircle2, AlertCircle, Loader2, type LucideIcon } from "lucide-react";
+import { submitContactLead } from "../actions/contact";
 
 interface ContactUsProps {
   isDark: boolean;
 }
 
 /* -------------------------------------------------------------------------- */
-/*  RevealOnScroll — same pattern used across Services/Blog for consistency  */
+/*  RevealOnScroll                                                            */
 /* -------------------------------------------------------------------------- */
 
 interface RevealOnScrollProps {
@@ -103,28 +103,73 @@ const CONTACT_DETAILS: ContactDetail[] = [
 ];
 
 /* -------------------------------------------------------------------------- */
-/*  ContactUs                                                                  */
+/*  Form Constants                                                            */
 /* -------------------------------------------------------------------------- */
+
+const SERVICES = [
+  "Website Development",
+  "Software Development",
+  "AI Solutions",
+  "Business Automation",
+  "Digital Marketing",
+  "Consulting / Other",
+];
+
+const BUDGET_RANGES = [
+  "< $5,000",
+  "$5,000 - $15,000",
+  "$15,000 - $50,000",
+  "$50,000+",
+  "Flexible",
+];
 
 type FormState = {
   name: string;
   email: string;
+  phone: string;
   company: string;
+  service: string;
+  budget: string;
   message: string;
 };
 
-const INITIAL_FORM: FormState = { name: "", email: "", company: "", message: "" };
+const INITIAL_FORM: FormState = {
+  name: "",
+  email: "",
+  phone: "",
+  company: "",
+  service: "",
+  budget: "",
+  message: "",
+};
 
 export default function ContactUs({ isDark }: ContactUsProps) {
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
+  const [honeypot, setHoneypot] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [configError, setConfigError] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
+  const [utmData, setUtmData] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const utm: Record<string, string> = {};
+      ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].forEach((key) => {
+        const val = urlParams.get(key);
+        if (val) utm[key] = val;
+      });
+      setUtmData(utm);
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const textPrimary = isDark ? "#ffffff" : "#000000";
   const textMuted = isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)";
-  const accent = isDark ? "#ffffff" : "#000000";
   const cardBg = isDark ? "rgba(255, 255, 255, 0.02)" : "#ffffff";
   const border = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)";
   const iconBg = isDark ? "#ffffff" : "#000000";
@@ -142,7 +187,21 @@ export default function ContactUs({ isDark }: ContactUsProps) {
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
-    if (configError) setConfigError(false);
+    if (submitError) setSubmitError(null);
+  };
+
+  const handleSelectService = (service: string) => {
+    setForm((prev) => ({
+      ...prev,
+      service: prev.service === service ? "" : service,
+    }));
+  };
+
+  const handleSelectBudget = (budget: string) => {
+    setForm((prev) => ({
+      ...prev,
+      budget: prev.budget === budget ? "" : budget,
+    }));
   };
 
   const validate = (): boolean => {
@@ -150,7 +209,7 @@ export default function ContactUs({ isDark }: ContactUsProps) {
     if (!form.name.trim()) next.name = "Please enter your name.";
     if (!form.email.trim()) {
       next.email = "Please enter your email.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
       next.email = "Enter a valid email address.";
     }
     if (!form.message.trim()) next.message = "Tell us a bit about your project.";
@@ -163,15 +222,36 @@ export default function ContactUs({ isDark }: ContactUsProps) {
     if (!validate()) return;
 
     setSubmitting(true);
-    setConfigError(false);
+    setSubmitError(null);
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 600));
-      if (DEMO_MODE) {
+      const landingPage = typeof window !== "undefined" ? window.location.pathname : "/";
+      const source = utmData.utm_source || "website_contact_form";
+
+      const res = await submitContactLead({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        company: form.company,
+        service: form.service,
+        budget: form.budget,
+        message: form.message,
+        landing_page: landingPage,
+        source,
+        utm: utmData,
+        honeypot,
+      });
+
+      if (res.success) {
         setSubmitted(true);
         setForm(INITIAL_FORM);
       } else {
-        setConfigError(true);
+        setSubmitError(res.error || "Failed to submit enquiry. Please try again.");
       }
+    } catch (err) {
+      setSubmitError(
+        err instanceof Error ? err.message : "An unexpected error occurred. Please try again."
+      );
     } finally {
       setSubmitting(false);
     }
@@ -195,13 +275,13 @@ export default function ContactUs({ isDark }: ContactUsProps) {
           Get in touch
         </span>
         <h2
-          className={`font-bold tracking-[-0.04em] uppercase text-4xl sm:text-5xl lg:text-6xl leading-[1.02] max-w-2xl text-center`}
+          className="font-bold tracking-[-0.04em] uppercase text-4xl sm:text-5xl lg:text-6xl leading-[1.02] max-w-2xl text-center"
           style={{ color: textPrimary }}
         >
           Let&apos;s build what&apos;s next.
         </h2>
         <p
-          className={`mt-4 text-base sm:text-lg max-w-lg leading-relaxed text-center`}
+          className="mt-4 text-base sm:text-lg max-w-lg leading-relaxed text-center"
           style={{ color: textMuted }}
         >
           Tell us about your project and we&apos;ll get back to you within one business day.
@@ -238,13 +318,19 @@ export default function ContactUs({ isDark }: ContactUsProps) {
                   Reach out directly
                 </h3>
                 <p className="text-sm sm:text-[15px] leading-relaxed mb-10" style={{ color: textMuted }}>
-                  Prefer email or a quick call? We&apos;re reachable directly, no forms required.
+                  Prefer email or a direct conversation? Reach us directly anytime.
                 </p>
 
                 <div className="flex flex-col gap-6">
                   {CONTACT_DETAILS.map(({ icon: Icon, label, value, href }) => (
                     <a key={label} href={href} className="flex items-start gap-4 group">
-                      <div className="flex items-center justify-center w-11 h-11 rounded-2xl flex-shrink-0 transition-transform duration-200 group-hover:scale-105" style={{ backgroundColor: iconBg, boxShadow: isDark ? "0 12px 30px rgba(255,255,255,0.15)" : "0 12px 30px rgba(0,0,0,0.1)" }}>
+                      <div
+                        className="flex items-center justify-center w-11 h-11 rounded-2xl flex-shrink-0 transition-transform duration-200 group-hover:scale-105"
+                        style={{
+                          backgroundColor: iconBg,
+                          boxShadow: isDark ? "0 12px 30px rgba(255,255,255,0.15)" : "0 12px 30px rgba(0,0,0,0.1)",
+                        }}
+                      >
                         <Icon size={18} color={iconColor} />
                       </div>
                       <div>
@@ -261,7 +347,7 @@ export default function ContactUs({ isDark }: ContactUsProps) {
               </div>
 
               <div className="mt-12 pt-8 text-xs sm:text-sm leading-relaxed" style={{ color: textMuted, borderTop: `1px solid ${border}` }}>
-                We aim to respond within one business day. For direct queries, reach the founder or manager using the emails above.
+                We respond within one business day. Your information is securely stored in our verified admin CRM system.
               </div>
             </div>
 
@@ -279,25 +365,44 @@ export default function ContactUs({ isDark }: ContactUsProps) {
                     <CheckCircle2 size={28} color={iconColor} />
                   </div>
                   <h3 className="font-bold text-xl sm:text-2xl mb-2" style={{ color: textPrimary }}>
-                    Message sent.
+                    Enquiry Received!
                   </h3>
-                  <p className="text-sm sm:text-base max-w-xs" style={{ color: textMuted }}>
-                    Thanks for reaching out — we&apos;ll be in touch shortly.
+                  <p className="text-sm sm:text-base max-w-sm" style={{ color: textMuted }}>
+                    Thank you for reaching out. A new lead has been registered, and our team will review your project and get back to you shortly.
                   </p>
-                  <button onClick={() => setSubmitted(false)} className="mt-8 text-sm font-semibold underline underline-offset-4" style={{ color: textPrimary }}>
+                  <button
+                    onClick={() => setSubmitted(false)}
+                    className="mt-8 text-sm font-semibold underline underline-offset-4 transition hover:opacity-80"
+                    style={{ color: textPrimary }}
+                  >
                     Send another message
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} noValidate>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                <form onSubmit={handleSubmit} noValidate className="space-y-5">
+                  {/* Invisible Honeypot anti-spam trap */}
+                  <div style={{ display: "none", position: "absolute", left: "-9999px" }} aria-hidden="true">
+                    <label htmlFor="website_url">Website URL</label>
+                    <input
+                      id="website_url"
+                      type="text"
+                      name="website_url"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={honeypot}
+                      onChange={(e) => setHoneypot(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Name & Email Row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                       <label
                         htmlFor="name"
                         className="block text-xs font-semibold uppercase tracking-wide mb-2"
                         style={{ color: textMuted }}
                       >
-                        Name
+                        Name <span className="text-red-500">*</span>
                       </label>
                       <input
                         id="name"
@@ -312,7 +417,7 @@ export default function ContactUs({ isDark }: ContactUsProps) {
                         }}
                       />
                       {errors.name && (
-                        <p className="mt-1.5 text-xs" style={{ color: "#ef4444" }}>
+                        <p className="mt-1.5 text-xs text-red-500">
                           {errors.name}
                         </p>
                       )}
@@ -324,7 +429,7 @@ export default function ContactUs({ isDark }: ContactUsProps) {
                         className="block text-xs font-semibold uppercase tracking-wide mb-2"
                         style={{ color: textMuted }}
                       >
-                        Email
+                        Email <span className="text-red-500">*</span>
                       </label>
                       <input
                         id="email"
@@ -339,46 +444,135 @@ export default function ContactUs({ isDark }: ContactUsProps) {
                         }}
                       />
                       {errors.email && (
-                        <p className="mt-1.5 text-xs" style={{ color: "#ef4444" }}>
+                        <p className="mt-1.5 text-xs text-red-500">
                           {errors.email}
                         </p>
                       )}
                     </div>
                   </div>
 
-                  <div className="mb-5">
-                    <label
-                      htmlFor="company"
-                      className="block text-xs font-semibold uppercase tracking-wide mb-2"
-                      style={{ color: textMuted }}
-                    >
-                      Company <span style={{ color: textMuted, fontWeight: 400 }}>(optional)</span>
-                    </label>
-                    <input
-                      id="company"
-                      type="text"
-                      value={form.company}
-                      onChange={handleChange("company")}
-                      placeholder="Acme Inc."
-                      className={`w-full rounded-xl px-4 py-3 text-sm sm:text-[15px] outline-none transition-colors ${placeholderClass}`}
-                      style={fieldStyle}
-                    />
+                  {/* Phone & Company Row */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                      <label
+                        htmlFor="phone"
+                        className="block text-xs font-semibold uppercase tracking-wide mb-2"
+                        style={{ color: textMuted }}
+                      >
+                        Phone <span style={{ color: textMuted, fontWeight: 400 }}>(optional)</span>
+                      </label>
+                      <input
+                        id="phone"
+                        type="tel"
+                        value={form.phone}
+                        onChange={handleChange("phone")}
+                        placeholder="+1 (555) 000-0000"
+                        className={`w-full rounded-xl px-4 py-3 text-sm sm:text-[15px] outline-none transition-colors ${placeholderClass}`}
+                        style={fieldStyle}
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="company"
+                        className="block text-xs font-semibold uppercase tracking-wide mb-2"
+                        style={{ color: textMuted }}
+                      >
+                        Company <span style={{ color: textMuted, fontWeight: 400 }}>(optional)</span>
+                      </label>
+                      <input
+                        id="company"
+                        type="text"
+                        value={form.company}
+                        onChange={handleChange("company")}
+                        placeholder="Acme Inc."
+                        className={`w-full rounded-xl px-4 py-3 text-sm sm:text-[15px] outline-none transition-colors ${placeholderClass}`}
+                        style={fieldStyle}
+                      />
+                    </div>
                   </div>
 
-                  <div className="mb-7">
+                  {/* Service Selection Pills */}
+                  <div>
+                    <label
+                      className="block text-xs font-semibold uppercase tracking-wide mb-2.5"
+                      style={{ color: textMuted }}
+                    >
+                      Service Needed <span style={{ color: textMuted, fontWeight: 400 }}>(optional)</span>
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {SERVICES.map((srv) => {
+                        const isSelected = form.service === srv;
+                        return (
+                          <button
+                            key={srv}
+                            type="button"
+                            onClick={() => handleSelectService(srv)}
+                            className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-150 border ${
+                              isSelected
+                                ? isDark
+                                  ? "bg-white text-black border-white shadow-sm"
+                                  : "bg-black text-white border-black shadow-sm"
+                                : isDark
+                                ? "bg-white/[0.04] text-white/70 border-white/10 hover:bg-white/[0.08] hover:text-white"
+                                : "bg-black/[0.03] text-black/70 border-black/10 hover:bg-black/[0.06] hover:text-black"
+                            }`}
+                          >
+                            {srv}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Budget Selection Pills */}
+                  <div>
+                    <label
+                      className="block text-xs font-semibold uppercase tracking-wide mb-2.5"
+                      style={{ color: textMuted }}
+                    >
+                      Estimated Budget <span style={{ color: textMuted, fontWeight: 400 }}>(optional)</span>
+                    </label>
+                    <div className="flex flex-wrap gap-2">
+                      {BUDGET_RANGES.map((bgt) => {
+                        const isSelected = form.budget === bgt;
+                        return (
+                          <button
+                            key={bgt}
+                            type="button"
+                            onClick={() => handleSelectBudget(bgt)}
+                            className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-150 border ${
+                              isSelected
+                                ? isDark
+                                  ? "bg-white text-black border-white shadow-sm"
+                                  : "bg-black text-white border-black shadow-sm"
+                                : isDark
+                                ? "bg-white/[0.04] text-white/70 border-white/10 hover:bg-white/[0.08] hover:text-white"
+                                : "bg-black/[0.03] text-black/70 border-black/10 hover:bg-black/[0.06] hover:text-black"
+                            }`}
+                          >
+                            {bgt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Message Field */}
+                  <div>
                     <label
                       htmlFor="message"
                       className="block text-xs font-semibold uppercase tracking-wide mb-2"
                       style={{ color: textMuted }}
                     >
-                      Project details
+                      Project Details <span className="text-red-500">*</span>
                     </label>
                     <textarea
                       id="message"
                       value={form.message}
                       onChange={handleChange("message")}
-                      placeholder="Tell us what you're building, your timeline, and any specifics we should know."
-                      rows={5}
+                      placeholder="Tell us what you're building, your goals, and any timeline or specifics we should know."
+                      rows={4}
                       className={`w-full rounded-xl px-4 py-3 text-sm sm:text-[15px] outline-none transition-colors resize-none ${placeholderClass}`}
                       style={{
                         ...fieldStyle,
@@ -386,28 +580,51 @@ export default function ContactUs({ isDark }: ContactUsProps) {
                       }}
                     />
                     {errors.message && (
-                      <p className="mt-1.5 text-xs" style={{ color: "#ef4444" }}>
+                      <p className="mt-1.5 text-xs text-red-500">
                         {errors.message}
                       </p>
                     )}
                   </div>
 
-                  {configError && (
-                    <div role="alert" aria-live="polite" className="mb-5 rounded-xl border px-4 py-3 text-sm leading-relaxed" style={{ borderColor: "rgba(245,158,11,0.25)", backgroundColor: "rgba(245,158,11,0.08)", color: textPrimary }}>
-                      Submission is not yet connected to a verified backend. TODO: wire this form to <code className="rounded bg-black/5 px-1 py-0.5">POST /api/contact</code> or email service. Your message was not sent — this is an intentional non-success state.
+                  {/* Error Alert */}
+                  {submitError && (
+                    <div
+                      role="alert"
+                      aria-live="polite"
+                      className="flex items-center gap-2.5 rounded-xl border border-rose-500/25 bg-rose-500/10 px-4 py-3 text-xs font-medium text-rose-500"
+                    >
+                      <AlertCircle className="h-4 w-4 shrink-0" />
+                      <span>{submitError}</span>
                     </div>
                   )}
 
+                  {/* Submit Button */}
                   <button
                     type="submit"
                     disabled={submitting}
                     aria-busy={submitting}
-                    className={`inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-3.5 rounded-full font-semibold text-sm sm:text-base transition-all duration-200 active:scale-95 disabled:opacity-70 disabled:active:scale-100 ${isDark ? "bg-white text-black hover:bg-white/90" : "bg-black text-white hover:bg-black/85"}`}
+                    className={`inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-3.5 rounded-full font-semibold text-sm sm:text-base transition-all duration-200 active:scale-95 disabled:opacity-70 disabled:active:scale-100 ${
+                      isDark
+                        ? "bg-white text-black hover:bg-white/90"
+                        : "bg-black text-white hover:bg-black/85"
+                    }`}
                     style={{
-                      boxShadow: isDark ? "0 12px 30px rgba(255,255,255,0.15)" : "0 12px 30px rgba(0,0,0,0.1)",
+                      boxShadow: isDark
+                        ? "0 12px 30px rgba(255,255,255,0.15)"
+                        : "0 12px 30px rgba(0,0,0,0.1)",
                     }}
                   >
-                    {submitting ? "Sending..." : <>Send message <Send size={16} /></>}
+                    {submitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>Sending message...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Send message</span>
+                        <Send size={16} />
+                      </>
+                    )}
                   </button>
                 </form>
               )}

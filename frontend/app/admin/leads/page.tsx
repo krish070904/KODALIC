@@ -21,6 +21,15 @@ function getLeadEmail(
     : null;
 }
 
+function getLeadCompany(
+  contactFields: Record<string, unknown>,
+): string | null {
+  return typeof contactFields.company === "string" &&
+    contactFields.company.trim()
+    ? contactFields.company
+    : null;
+}
+
 function formatDate(value: string): string {
   return new Intl.DateTimeFormat("en-IN", {
     day: "2-digit",
@@ -237,6 +246,10 @@ export default async function LeadsPage() {
                         lead.contact_fields,
                       );
 
+                      const company = getLeadCompany(
+                        lead.contact_fields,
+                      );
+
                       return (
 
                         <tr
@@ -266,8 +279,14 @@ export default async function LeadsPage() {
                                 </p>
 
                                 {email && (
-                                  <p className="mt-1 truncate text-xs text-slate-400 dark:text-white/35">
+                                  <p className="mt-0.5 truncate text-xs text-slate-400 dark:text-white/35">
                                     {email}
+                                  </p>
+                                )}
+
+                                {company && (
+                                  <p className="mt-0.5 truncate text-[11px] font-medium text-slate-500 dark:text-white/50">
+                                    {company}
                                   </p>
                                 )}
 

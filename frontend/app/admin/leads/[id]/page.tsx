@@ -84,6 +84,8 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
   const email = getStringValue(lead.contact_fields?.email);
 
   const phone = getStringValue(lead.contact_fields?.phone);
+
+  const company = getStringValue(lead.contact_fields?.company);
   return (
     <div className="p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
@@ -117,7 +119,14 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
                   {name}
                 </h1>
 
-                {email && <p className="mt-1 text-sm text-slate-500 dark:text-white/40">{email}</p>}
+                <div className="mt-1 flex flex-wrap items-center gap-2">
+                  {email && <p className="text-sm text-slate-500 dark:text-white/40">{email}</p>}
+                  {company && (
+                    <span className="rounded-md border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/[0.05] px-2 py-0.5 text-[11px] font-medium text-slate-600 dark:text-white/60">
+                      {company}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -169,6 +178,14 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
 
                     <p className="mt-1 text-sm text-slate-700 dark:text-white/75">
                       {phone ?? "Not provided"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-slate-400 dark:text-white/35">Company</p>
+
+                    <p className="mt-1 text-sm text-slate-700 dark:text-white/75">
+                      {company ?? "Not provided"}
                     </p>
                   </div>
 

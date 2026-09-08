@@ -91,13 +91,7 @@ export default async function AdminPage() {
                 </p>
               </div>
 
-              <div className="hidden text-right sm:block">
-                <p className="text-xs text-slate-400 dark:text-white/35">Role</p>
-
-                <p className="mt-1 text-sm font-medium text-slate-700 dark:text-white/75">
-                  {adminUser.role}
-                </p>
-              </div>
+             
             </div>
           </div>
 
